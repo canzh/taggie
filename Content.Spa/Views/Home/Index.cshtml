@@ -1,0 +1,27 @@
+﻿@{
+    ViewData["CurrentUrl"] = $"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.Path}";
+    ViewData["Url"] = "http://localhost:7001/Identity/Account/Register?returnUrl=" + ViewData["CurrentUrl"];
+}
+
+<div class="container">
+    <header class="page-header">
+        <h1>Taggie Master</h1>
+    </header>
+
+    <div class="row">
+        <ul class="list-unstyled list-inline">
+            <li><button class="btn btn-default request" onclick="login()">Login</button></li>
+            <li><a href=@ViewData["Url"]>Register</a></li>
+        </ul>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        mgr.getUser().then(function (user) {
+            if (user) {
+                window.location = "/home/task";
+            }
+        });
+    </script>
+}

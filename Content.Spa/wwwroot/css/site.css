@@ -1,0 +1,14 @@
+﻿
+
+#logo {
+    font-size: large;
+    text-align: left;
+}
+
+#footer {
+    border: 1px solid grey;
+}
+
+#greeting {
+    float: right;
+}

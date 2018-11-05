@@ -1,0 +1,12 @@
+﻿@model string
+@using taggie.Models
+
+<form asp-action="DeleteApplicationRole" role="form">
+    @await Html.PartialAsync("_ModalHeader", new ModalHeader { Heading = "Delete Application Role" })
+
+    <div class="modal-body form-horizontal">
+        Are you want to delete @Model?
+    </div>
+    @await Html.PartialAsync("_ModalFooter", new ModalFooter { SubmitButtonText = "Delete" })
+</form>
+
