@@ -16,10 +16,14 @@ namespace Content.Api.Controllers
     public class CategoriesController : ControllerBase
     {
         private readonly ContentApiContext _context;
+        private readonly IHttpContextAccessor _httpContext;
 
-        public CategoriesController(ContentApiContext context)
+        public CategoriesController(ContentApiContext context, IHttpContextAccessor httpContext)
         {
             _context = context;
+            _httpContext = httpContext;
+
+            var u =  httpContext.HttpContext.User;
         }
 
         // GET: api/Categories

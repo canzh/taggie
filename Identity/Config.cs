@@ -1,4 +1,5 @@
-﻿using IdentityServer4;
+﻿using IdentityModel;
+using IdentityServer4;
 using IdentityServer4.Models;
 using System.Collections.Generic;
 using System.Security.Claims;
@@ -21,7 +22,7 @@ namespace taggie
         {
             return new List<ApiResource>
             {
-                new ApiResource("api1", "My API")
+                new ApiResource("api1", "My API") { UserClaims = { JwtClaimTypes.Name, JwtClaimTypes.Role, "team" }}
             };
         }
 
