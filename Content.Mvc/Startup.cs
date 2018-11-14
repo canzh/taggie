@@ -100,16 +100,16 @@ namespace Content.Mvc
             services.AddTransient<HttpClientAuthorizationDelegatingHandler>();
 
             services.AddHttpClient<IIdentityService, IdentityService>()
-                .SetHandlerLifetime(TimeSpan.FromMinutes(5))  //Sample. Default lifetime is 2 minutes
+                .SetHandlerLifetime(TimeSpan.FromMinutes(5));  //Sample. Default lifetime is 2 minutes
                 //.AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
-                .AddPolicyHandler(GetRetryPolicy())
-                .AddPolicyHandler(GetCircuitBreakerPolicy());
+                //.AddPolicyHandler(GetRetryPolicy())
+                //.AddPolicyHandler(GetCircuitBreakerPolicy());
 
             services.AddHttpClient<IDataService, DataService>()
-                .SetHandlerLifetime(TimeSpan.FromMinutes(5))
+                .SetHandlerLifetime(TimeSpan.FromMinutes(5));
                 //.AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
-                .AddPolicyHandler(GetRetryPolicy())
-                .AddPolicyHandler(GetCircuitBreakerPolicy());
+                //.AddPolicyHandler(GetRetryPolicy())
+                //.AddPolicyHandler(GetCircuitBreakerPolicy());
 
             return services;
         }

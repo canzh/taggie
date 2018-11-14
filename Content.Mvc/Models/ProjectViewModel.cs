@@ -7,22 +7,22 @@ namespace Content.Mvc.Models
 {
     public class ProjectViewModel
     {
-        [Display(Name = "ProjectId")]
+        [Display(Name = "Id")]
         public int Id { get; set; }
 
-        [Display(Name = "ProjectName")]
+        [Display(Name = "Name")]
         public string ProjectName { get; set; }
 
-        [Display(Name = "ProjectDescription")]
+        [Display(Name = "Description")]
         public string Description { get; set; }
 
-        [Display(Name = "ProjectBaseDir")]
+        [Display(Name = "BaseDir")]
         public string BaseDir { get; set; }
 
         [Display(Name = "TotalItems")]
         public int TotalItems { get; set; }
 
-        [Display(Name = "ProjectStatus")]
+        [Display(Name = "Status")]
         public ProjectStatus Status { get; set; }
 
         [Display(Name = "CreatedDate")]

@@ -9,10 +9,11 @@ namespace Content.Mvc.Models
 {
     public class TeamViewModel
     {
+        [Display(Name = "Id")]
         public int Id { get; set; }
 
         [Required]
-        [Display(Name = "TeamName")]
+        [Display(Name = "Name")]
         public string TeamName { get; set; }
 
         [Display(Name = "Description")]
@@ -33,5 +34,8 @@ namespace Content.Mvc.Models
 
         [Display(Name = "TeamMembers")]
         public List<IdentityResponseModel> TeamMembers { get; set; }
+
+        [Display(Name = "AssignedProject")]
+        public List<TeamAssignmentViewModel> AssignedProjects { get; set; }
     }
 }

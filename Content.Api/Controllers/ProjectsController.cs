@@ -117,7 +117,7 @@ namespace Content.Api.Controllers
             return CreatedAtAction("GetProject", new { id = project.Id }, project);
         }
 
-        // POST: api/Projects/AssignItemsToTeam
+        // POST: api/Projects/1
         [HttpPost("{projectId}")]
         public async Task<IActionResult> PostAssignItemsToTeam(int projectId, [FromBody] ProjectAssignment assignment)
         {
@@ -138,6 +138,11 @@ namespace Content.Api.Controllers
             if (team == null)
             {
                 return NotFound();
+            }
+
+            if (await _context.Teamprojects.FirstOrDefaultAsync(d => d.TeamId == team.Id && d.ProjectId == project.Id) != null)
+            {
+                return BadRequest($"Team {team.TeamName} is already linked with Project {project.ProjectName}");
             }
 
             project.Teamprojects.Add(new Teamprojects { Project = project, Team = team, AssignedProjectItems = assignment.AssignedItemsCount });

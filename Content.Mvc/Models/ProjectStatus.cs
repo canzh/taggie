@@ -4,10 +4,10 @@ namespace Content.Mvc.Models
 {
     public enum ProjectStatus
     {
-        [Display(Name = "ProjectStatusActive")]
+        [Display(Name = "StatusActive")]
         Active = 1,
 
-        [Display(Name = "ProjectStatusClosed")]
+        [Display(Name = "StatusClosed")]
         Closed = 2
     }
 }

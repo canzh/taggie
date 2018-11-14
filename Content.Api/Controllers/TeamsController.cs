@@ -29,7 +29,8 @@ namespace Content.Api.Controllers
 
         // GET: api/Teams/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetTeam([FromRoute] int id)
+        [Route("detail")]
+        public async Task<IActionResult> GetTeam([FromQuery] int id)
         {
             if (!ModelState.IsValid)
             {
@@ -44,6 +45,35 @@ namespace Content.Api.Controllers
             }
 
             return Ok(team);
+        }
+
+        [HttpGet("{id}")]
+        [Route("assignment")]
+        public async Task<IActionResult> GetAssignedProjects([FromQuery] int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var assignments = _context.Teamprojects
+                .Where(d => d.TeamId == id)
+                .Include(e => e.Project)
+                .Select(s =>
+                new
+                {
+                    ProjectName = s.Project.ProjectName,
+                    AssignedItemsCount = s.AssignedProjectItems
+                })
+            .ToList();
+
+
+            if (assignments == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(assignments);
         }
 
         // PUT: api/Teams/5

@@ -117,8 +117,23 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AssignedItemsCount" xml:space="preserve">
+    <value>分配的项目份额</value>
+  </data>
+  <data name="AssignedProject" xml:space="preserve">
+    <value>分配的项目</value>
+  </data>
+  <data name="Assignments" xml:space="preserve">
+    <value>分配</value>
+  </data>
+  <data name="BaseDir" xml:space="preserve">
+    <value>主目录</value>
+  </data>
   <data name="CreatedDate" xml:space="preserve">
     <value>创建日期</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>描述</value>
   </data>
   <data name="Id" xml:space="preserve">
     <value>标识符</value>
@@ -129,16 +144,43 @@
   <data name="MemberCount" xml:space="preserve">
     <value>团队人员数</value>
   </data>
+  <data name="Name" xml:space="preserve">
+    <value>名称</value>
+  </data>
+  <data name="Role" xml:space="preserve">
+    <value>用户角色</value>
+  </data>
   <data name="Status" xml:space="preserve">
     <value>状态</value>
+  </data>
+  <data name="StatusActive" xml:space="preserve">
+    <value>开放</value>
+  </data>
+  <data name="StatusClosed" xml:space="preserve">
+    <value>关闭</value>
+  </data>
+  <data name="StatusDisabled" xml:space="preserve">
+    <value>失效</value>
   </data>
   <data name="Team.Index.Title" xml:space="preserve">
     <value>团队首页</value>
   </data>
+  <data name="TeamList" xml:space="preserve">
+    <value>团队列表</value>
+  </data>
+  <data name="TeamMembers" xml:space="preserve">
+    <value>团队成员</value>
+  </data>
   <data name="TeamName" xml:space="preserve">
-    <value>名称</value>
+    <value>团队名称</value>
   </data>
   <data name="Title" xml:space="preserve">
-    <value>团队主页share</value>
+    <value>主页</value>
+  </data>
+  <data name="TotalItems" xml:space="preserve">
+    <value>总量</value>
+  </data>
+  <data name="UserName" xml:space="preserve">
+    <value>用户名</value>
   </data>
 </root>

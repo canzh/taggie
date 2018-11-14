@@ -11,6 +11,7 @@ namespace Content.Mvc.Services
         Task<IEnumerable<TeamViewModel>> GetAllTeams();
         Task<int> CreateNewTeam(TeamViewModel model);
         Task<TeamViewModel> GetTeamDetail(int teamId);
+        Task<List<TeamAssignmentViewModel>> GetTeamAssignments(int teamId);
 
         Task<IEnumerable<ProjectViewModel>> GetAllProjects();
         Task<ProjectViewModel> GetProjectDetail(int projectId);

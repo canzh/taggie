@@ -51,7 +51,7 @@ namespace Content.Mvc.Services
 
         public async Task<TeamViewModel> GetTeamDetail(int teamId)
         {
-            var responseString = await _apiClient.GetStringAsync(string.Format("{0}/teams/{1}", _apiUrl, teamId));
+            var responseString = await _apiClient.GetStringAsync(string.Format("{0}/teams/detail?id={1}", _apiUrl, teamId));
 
             var team = JObject.Parse(responseString);
 
@@ -66,9 +66,17 @@ namespace Content.Mvc.Services
             };
         }
 
+        public async Task<List<TeamAssignmentViewModel>> GetTeamAssignments(int teamId)
+        {
+            var responseString = await _apiClient.GetStringAsync(string.Format("{0}/teams/assignment?id={1}", _apiUrl, teamId));
+            var response = JsonConvert.DeserializeObject<List<TeamAssignmentViewModel>>(responseString);
+
+            return response;
+        }
+
         public async Task<IEnumerable<ProjectViewModel>> GetAllProjects()
         {
-           var responseString = await _apiClient.GetStringAsync($"{_apiUrl}/projects");
+            var responseString = await _apiClient.GetStringAsync($"{_apiUrl}/projects");
 
             var response = JsonConvert.DeserializeObject<List<ProjectViewModel>>(responseString);
 
@@ -100,9 +108,10 @@ namespace Content.Mvc.Services
         {
             var jsonContent = new StringContent(JsonConvert.SerializeObject(model), System.Text.Encoding.UTF8, "application/json");
 
-            var response = await _apiClient.PostAsync($"{_apiUrl}/projects/AssignItemsToTeam/{projectId}", jsonContent);
+            var response = await _apiClient.PostAsync($"{_apiUrl}/projects/{projectId}", jsonContent);
 
             response.EnsureSuccessStatusCode();
         }
+
     }
 }

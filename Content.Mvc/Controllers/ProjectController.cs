@@ -58,10 +58,10 @@ namespace Content.Mvc.Controllers
         [HttpPost]
         public async Task<IActionResult> AssignToTeam(int id, ProjectAssignmentViewModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return PartialView("_AssignToTeam", model);
-            }
+            //if (!ModelState.IsValid)
+            //{
+            //    return PartialView("_AssignToTeam", model);
+            //}
 
             var teamId = model.TeamId;
 

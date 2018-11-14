@@ -76,32 +76,27 @@
         </tbody>
     </table>
     <hr />
-    <h3>@SharedHtmlLocalizer["LinkProject"]</h3>
-    <div class="btn-group">
-        <a id="linkProject" data-toggle="modal" asp-action="LinkProject" data-target="#modal-action-user" class="btn btn-primary">
-            <i class="glyphicon glyphicon-plus"></i>  Link Project
-        </a>
-    </div>
+    <h3>@Html.DisplayNameFor(model => model.AssignedProjects)</h3>
     <table class="table">
         <thead>
             <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.TeamMembers[0].UserName)
+                    @Html.DisplayNameFor(model => model.AssignedProjects[0].ProjectName)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.TeamMembers[0].Role)
+                    @Html.DisplayNameFor(model => model.AssignedProjects[0].AssignedItemsCount)
                 </th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model.TeamMembers)
+            @foreach (var item in Model.AssignedProjects)
             {
                 <tr>
                     <td>
-                        @Html.DisplayFor(modelItem => item.UserName)
+                        @Html.DisplayFor(modelItem => item.ProjectName)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Role)
+                        @Html.DisplayFor(modelItem => item.AssignedItemsCount)
                     </td>
                 </tr>
             }
@@ -116,5 +111,5 @@
 @await Html.PartialAsync("_Modal")
 
 @section Scripts {
-   
+
 }
