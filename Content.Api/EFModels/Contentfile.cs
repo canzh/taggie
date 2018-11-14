@@ -9,8 +9,6 @@ namespace Content.Api.EFModels
         {
             Filecategory = new HashSet<Filecategory>();
             Filesubcategory = new HashSet<Filesubcategory>();
-            Projectitemcategories = new HashSet<Projectitemcategories>();
-            Projectitemsubcategories = new HashSet<Projectitemsubcategories>();
         }
 
         public int Id { get; set; }
@@ -27,7 +25,5 @@ namespace Content.Api.EFModels
         public Contentfilepath FilePath { get; set; }
         public ICollection<Filecategory> Filecategory { get; set; }
         public ICollection<Filesubcategory> Filesubcategory { get; set; }
-        public ICollection<Projectitemcategories> Projectitemcategories { get; set; }
-        public ICollection<Projectitemsubcategories> Projectitemsubcategories { get; set; }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using Content.Api.EFModels.enums;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace Content.Api.EFModels
 {

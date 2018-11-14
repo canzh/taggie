@@ -8,7 +8,9 @@ namespace Content.Api.EFModels
     {
         public Project()
         {
+            Projectcategory = new HashSet<Projectcategory>();
             Projectitem = new HashSet<Projectitem>();
+            Projectsubcategory = new HashSet<Projectsubcategory>();
             Teamprojects = new HashSet<Teamprojects>();
         }
 
@@ -20,7 +22,9 @@ namespace Content.Api.EFModels
         public ProjectStatus Status { get; set; }
         public DateTime CreatedDate { get; set; }
 
+        public ICollection<Projectcategory> Projectcategory { get; set; }
         public ICollection<Projectitem> Projectitem { get; set; }
+        public ICollection<Projectsubcategory> Projectsubcategory { get; set; }
         public ICollection<Teamprojects> Teamprojects { get; set; }
     }
 }

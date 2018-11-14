@@ -26,9 +26,13 @@ namespace Content.Api.EFModels
         public virtual DbSet<Finance> Finance { get; set; }
         public virtual DbSet<Financehistory> Financehistory { get; set; }
         public virtual DbSet<Project> Project { get; set; }
+        public virtual DbSet<Projectcategory> Projectcategory { get; set; }
         public virtual DbSet<Projectitem> Projectitem { get; set; }
         public virtual DbSet<Projectitemcategories> Projectitemcategories { get; set; }
+        public virtual DbSet<Projectitemkeywords> Projectitemkeywords { get; set; }
         public virtual DbSet<Projectitemsubcategories> Projectitemsubcategories { get; set; }
+        public virtual DbSet<Projectkeyword> Projectkeyword { get; set; }
+        public virtual DbSet<Projectsubcategory> Projectsubcategory { get; set; }
         public virtual DbSet<Subcategory> Subcategory { get; set; }
         public virtual DbSet<Team> Team { get; set; }
         public virtual DbSet<Teamprojects> Teamprojects { get; set; }
@@ -118,9 +122,7 @@ namespace Content.Api.EFModels
             {
                 entity.ToTable("effortstatisticqa", "taggie.content.api.dev");
 
-                entity.Property(e => e.Id)
-                    .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.Id).HasColumnType("int(11)");
 
                 entity.Property(e => e.EffortCount).HasColumnType("int(11)");
 
@@ -155,9 +157,7 @@ namespace Content.Api.EFModels
             {
                 entity.ToTable("effortstatistictag", "taggie.content.api.dev");
 
-                entity.Property(e => e.Id)
-                    .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.Id).HasColumnType("int(11)");
 
                 entity.Property(e => e.FinishedCount).HasColumnType("int(11)");
 
@@ -198,9 +198,7 @@ namespace Content.Api.EFModels
                 entity.HasIndex(e => e.TeamId)
                     .HasName("FK_E_Team");
 
-                entity.Property(e => e.Id)
-                    .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.Id).HasColumnType("int(11)");
 
                 entity.Property(e => e.FinishedCount).HasColumnType("int(11)");
 
@@ -286,8 +284,7 @@ namespace Content.Api.EFModels
                 entity.HasIndex(e => e.TeamId)
                     .HasName("FK_F_Team");
 
-                entity.Property(e => e.Id)
-                    .HasColumnType("int(11)");
+                entity.Property(e => e.Id).HasColumnType("int(11)");
 
                 entity.Property(e => e.SettledEffort).HasColumnType("int(11)");
 
@@ -344,6 +341,31 @@ namespace Content.Api.EFModels
                 entity.Property(e => e.TotalItems).HasColumnType("int(11)");
             });
 
+            modelBuilder.Entity<Projectcategory>(entity =>
+            {
+                entity.ToTable("projectcategory", "taggie.content.api.dev");
+
+                entity.HasIndex(e => e.ProjectId)
+                    .HasName("FK_P_Category");
+
+                entity.Property(e => e.Id).HasColumnType("int(11)");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ProjectId).HasColumnType("int(11)");
+
+                entity.Property(e => e.Status).HasColumnType("tinyint(4)");
+
+                entity.HasOne(d => d.Project)
+                    .WithMany(p => p.Projectcategory)
+                    .HasForeignKey(d => d.ProjectId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_P_Category");
+            });
+
             modelBuilder.Entity<Projectitem>(entity =>
             {
                 entity.ToTable("projectitem", "taggie.content.api.dev");
@@ -386,35 +408,66 @@ namespace Content.Api.EFModels
                 entity.HasIndex(e => e.CategoryId)
                     .HasName("FK_CategoryId");
 
-                entity.HasIndex(e => e.FileId)
+                entity.HasIndex(e => e.ProjectItemId)
                     .HasName("FK_FileId");
 
                 entity.Property(e => e.Id).HasColumnType("int(11)");
 
+                entity.Property(e => e.AddedByRole).HasColumnType("tinyint(4)");
+
                 entity.Property(e => e.CategoryId).HasColumnType("int(11)");
 
-                entity.Property(e => e.FileId).HasColumnType("int(11)");
-
-                entity.Property(e => e.Type).HasColumnType("tinyint(4)");
+                entity.Property(e => e.ProjectItemId).HasColumnType("int(11)");
 
                 entity.HasOne(d => d.Category)
                     .WithMany(p => p.Projectitemcategories)
                     .HasForeignKey(d => d.CategoryId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("projectitemcategories_ibfk_1");
+                    .HasConstraintName("FK_PI_Category");
 
-                entity.HasOne(d => d.File)
+                entity.HasOne(d => d.ProjectItem)
                     .WithMany(p => p.Projectitemcategories)
-                    .HasForeignKey(d => d.FileId)
+                    .HasForeignKey(d => d.ProjectItemId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("projectitemcategories_ibfk_2");
+                    .HasConstraintName("FK_Category_PI");
+            });
+
+            modelBuilder.Entity<Projectitemkeywords>(entity =>
+            {
+                entity.ToTable("projectitemkeywords", "taggie.content.api.dev");
+
+                entity.HasIndex(e => e.KeywordId)
+                    .HasName("FK_CategoryId");
+
+                entity.HasIndex(e => e.ProjectItemId)
+                    .HasName("FK_FileId");
+
+                entity.Property(e => e.Id).HasColumnType("int(11)");
+
+                entity.Property(e => e.AddedByRole).HasColumnType("tinyint(4)");
+
+                entity.Property(e => e.KeywordId).HasColumnType("int(11)");
+
+                entity.Property(e => e.ProjectItemId).HasColumnType("int(11)");
+
+                entity.HasOne(d => d.Keyword)
+                    .WithMany(p => p.Projectitemkeywords)
+                    .HasForeignKey(d => d.KeywordId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PI_Keyword");
+
+                entity.HasOne(d => d.ProjectItem)
+                    .WithMany(p => p.Projectitemkeywords)
+                    .HasForeignKey(d => d.ProjectItemId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Keyword_PI");
             });
 
             modelBuilder.Entity<Projectitemsubcategories>(entity =>
             {
                 entity.ToTable("projectitemsubcategories", "taggie.content.api.dev");
 
-                entity.HasIndex(e => e.FileId)
+                entity.HasIndex(e => e.ProjectItemId)
                     .HasName("FK_FileId_Sub");
 
                 entity.HasIndex(e => e.SubCategoryId)
@@ -422,23 +475,66 @@ namespace Content.Api.EFModels
 
                 entity.Property(e => e.Id).HasColumnType("int(11)");
 
-                entity.Property(e => e.FileId).HasColumnType("int(11)");
+                entity.Property(e => e.AddedByRole).HasColumnType("tinyint(4)");
+
+                entity.Property(e => e.ProjectItemId).HasColumnType("int(11)");
 
                 entity.Property(e => e.SubCategoryId).HasColumnType("int(11)");
 
-                entity.Property(e => e.Type).HasColumnType("tinyint(4)");
-
-                entity.HasOne(d => d.File)
+                entity.HasOne(d => d.ProjectItem)
                     .WithMany(p => p.Projectitemsubcategories)
-                    .HasForeignKey(d => d.FileId)
+                    .HasForeignKey(d => d.ProjectItemId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("projectitemsubcategories_ibfk_1");
+                    .HasConstraintName("FK_PI_Subcategory");
 
                 entity.HasOne(d => d.SubCategory)
                     .WithMany(p => p.Projectitemsubcategories)
                     .HasForeignKey(d => d.SubCategoryId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("projectitemsubcategories_ibfk_2");
+                    .HasConstraintName("FK_Subcategory_PI");
+            });
+
+            modelBuilder.Entity<Projectkeyword>(entity =>
+            {
+                entity.ToTable("projectkeyword", "taggie.content.api.dev");
+
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ProjectId).HasColumnType("int(11)");
+
+                entity.Property(e => e.Status).HasColumnType("tinyint(4)");
+            });
+
+            modelBuilder.Entity<Projectsubcategory>(entity =>
+            {
+                entity.ToTable("projectsubcategory", "taggie.content.api.dev");
+
+                entity.HasIndex(e => e.ProjectId)
+                    .HasName("FK_P_Subcategory");
+
+                entity.Property(e => e.Id).HasColumnType("int(11)");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ProjectId).HasColumnType("int(11)");
+
+                entity.Property(e => e.Status).HasColumnType("tinyint(4)");
+
+                entity.HasOne(d => d.Project)
+                    .WithMany(p => p.Projectsubcategory)
+                    .HasForeignKey(d => d.ProjectId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_P_Subcategory");
             });
 
             modelBuilder.Entity<Subcategory>(entity =>
@@ -459,12 +555,13 @@ namespace Content.Api.EFModels
             {
                 entity.ToTable("team", "taggie.content.api.dev");
 
-                entity.Property(e => e.Id)
-                    .HasColumnType("int(11)");
+                entity.Property(e => e.Id).HasColumnType("int(11)");
 
                 entity.Property(e => e.Description)
-                    .HasMaxLength(5000)
+                    .HasMaxLength(1000)
                     .IsUnicode(false);
+
+                entity.Property(e => e.MemberCount).HasColumnType("int(11)");
 
                 entity.Property(e => e.Status).HasColumnType("tinyint(4)");
 
@@ -472,8 +569,6 @@ namespace Content.Api.EFModels
                     .IsRequired()
                     .HasMaxLength(100)
                     .IsUnicode(false);
-
-                entity.Property(e => e.MemberCount).HasColumnType("int(11)");
             });
 
             modelBuilder.Entity<Teamprojects>(entity =>
@@ -486,8 +581,7 @@ namespace Content.Api.EFModels
                 entity.HasIndex(e => e.TeamId)
                     .HasName("FK_jTeamId");
 
-                entity.Property(e => e.Id)
-                    .HasColumnType("int(11)");
+                entity.Property(e => e.Id).HasColumnType("int(11)");
 
                 entity.Property(e => e.AssignedProjectItems).HasColumnType("int(11)");
 
@@ -498,11 +592,13 @@ namespace Content.Api.EFModels
                 entity.HasOne(d => d.Project)
                     .WithMany(p => p.Teamprojects)
                     .HasForeignKey(d => d.ProjectId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_jProjectId");
 
                 entity.HasOne(d => d.Team)
                     .WithMany(p => p.Teamprojects)
                     .HasForeignKey(d => d.TeamId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_jTeamId");
             });
         }

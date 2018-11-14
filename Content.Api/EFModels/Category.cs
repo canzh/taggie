@@ -8,7 +8,6 @@ namespace Content.Api.EFModels
         public Category()
         {
             Filecategory = new HashSet<Filecategory>();
-            Projectitemcategories = new HashSet<Projectitemcategories>();
         }
 
         public int Id { get; set; }
@@ -16,6 +15,5 @@ namespace Content.Api.EFModels
         public byte Status { get; set; }
 
         public ICollection<Filecategory> Filecategory { get; set; }
-        public ICollection<Projectitemcategories> Projectitemcategories { get; set; }
     }
 }
