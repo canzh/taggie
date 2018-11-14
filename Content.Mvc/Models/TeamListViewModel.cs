@@ -1,16 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Content.Mvc.Models
 {
-    public class ProjectAssignmentViewModel
+    public class TeamListViewModel
     {
-        public int TeamId { get; set; }
-        public string TeamName { get; set; }
+        public int SelectedTeamId { get; set; }
 
-        [Display(Name = "AssignedItemsCount")]
-        public int AssignedItemsCount { get; set; }
+        public int AssignedItemCount { get; set; }
 
         [Display(Name = "TeamList")]
         public List<SelectListItem> Teams { get; set; }

@@ -60,7 +60,7 @@ namespace Content.Api.Controllers
                     {
                         TeamId = d.TeamId,
                         TeamName = d.Team.TeamName,
-                        AssignedItems = d.AssignedProjectItems
+                        AssignedItemsCount = d.AssignedProjectItems
                     }).ToList()
             };
 
@@ -115,6 +115,36 @@ namespace Content.Api.Controllers
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetProject", new { id = project.Id }, project);
+        }
+
+        // POST: api/Projects/AssignItemsToTeam
+        [HttpPost("{projectId}")]
+        public async Task<IActionResult> PostAssignItemsToTeam(int projectId, [FromBody] ProjectAssignment assignment)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var project = await _context.Project.FindAsync(projectId);
+
+            if (project == null)
+            {
+                return NotFound();
+            }
+
+            var team = await _context.Team.FindAsync(assignment.TeamId);
+
+            if (team == null)
+            {
+                return NotFound();
+            }
+
+            project.Teamprojects.Add(new Teamprojects { Project = project, Team = team, AssignedProjectItems = assignment.AssignedItemsCount });
+
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
 
         // DELETE: api/Projects/5

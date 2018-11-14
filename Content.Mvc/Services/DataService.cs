@@ -35,7 +35,7 @@ namespace Content.Mvc.Services
 
         public async Task<int> CreateNewTeam(TeamViewModel model)
         {
-            var dataModel = new { TeamName = model.TeamName, MemberCount = model.MemberCount, Description = model.Description };
+            //var dataModel = new { TeamName = model.TeamName, MemberCount = model.MemberCount, Description = model.Description };
             var jsonContent = new StringContent(JsonConvert.SerializeObject(model), System.Text.Encoding.UTF8, "application/json");
 
             var response = await _apiClient.PostAsync($"{_apiUrl}/teams", jsonContent);
@@ -94,6 +94,15 @@ namespace Content.Mvc.Services
             //    Status = (TeamStatus)team.Value<int>("Status"),
             //    CreatedDate = team.Value<DateTime>("CreatedDate")
             //};
+        }
+
+        public async Task AssignProjectItemsToTeam(int projectId, ProjectAssignmentViewModel model)
+        {
+            var jsonContent = new StringContent(JsonConvert.SerializeObject(model), System.Text.Encoding.UTF8, "application/json");
+
+            var response = await _apiClient.PostAsync($"{_apiUrl}/projects/AssignItemsToTeam/{projectId}", jsonContent);
+
+            response.EnsureSuccessStatusCode();
         }
     }
 }
