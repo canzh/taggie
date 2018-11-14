@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Content.Mvc.Models;
+using Content.Mvc.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
@@ -13,28 +14,37 @@ namespace Content.Mvc.Controllers
     {
         // http://localhost:7004/?culture=es-MX&ui-culture=es-MX
         private readonly IStringLocalizer<TeamController> _localizer;
+        private readonly IDataService _apiService;
+        private readonly IIdentityService _identityService;
 
-        public TeamController(IStringLocalizer<TeamController> localizer)
+        public TeamController(IStringLocalizer<TeamController> localizer, IDataService apiService, IIdentityService identityService)
         {
-             _localizer = localizer;
+            _localizer = localizer;
+            _apiService = apiService;
+            _identityService = identityService;
         }
 
         // GET: Team
-        public ActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            List<TeamViewModel> list = new List<TeamViewModel>();
-
+            var list = await _apiService.GetAllTeams();
             return View(list);
         }
 
         // GET: Team/Details/5
-        public ActionResult Details(int id)
+        public async Task<IActionResult> Details(int id)
         {
-            return View();
+            var team = await _apiService.GetTeamDetail(id);
+
+            var members = await _identityService.GetTeamMembers(id);
+
+            team.TeamMembers = members.ToList();
+
+            return View(team);
         }
 
         // GET: Team/Create
-        public ActionResult Create()
+        public IActionResult Create()
         {
             return View();
         }
@@ -42,18 +52,33 @@ namespace Content.Mvc.Controllers
         // POST: Team/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<IActionResult> Create(TeamViewModel model)
         {
             try
             {
-                // TODO: Add insert logic here
+                if (ModelState.IsValid)
+                {
+                    var newId = await _apiService.CreateNewTeam(model);
 
-                return RedirectToAction(nameof(Index));
+                    await _identityService.CreateTeamUsers(
+                        new Services.DTO.IdentityRequestModel
+                        {
+                            TeamId = newId,
+                            MemberCount = model.MemberCount,
+                            TeamName = model.TeamName,
+                            IsQA = model.IsQATeam
+                        }
+                    );
+
+                    return RedirectToAction(nameof(Details), new { id = newId });
+                }
             }
             catch
             {
                 return View();
             }
+
+            return View();
         }
 
         // GET: Team/Edit/5

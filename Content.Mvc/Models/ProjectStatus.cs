@@ -1,8 +1,8 @@
 ﻿namespace Content.Mvc.Models
 {
-    public enum TeamStatus
+    public enum ProjectStatus
     {
-        Disabled = 0,
         Active = 1,
+        Closed = 2
     }
 }

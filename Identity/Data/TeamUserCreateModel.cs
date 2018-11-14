@@ -9,7 +9,7 @@ namespace taggie.Data
     {
         public int TeamId { get; set; }
         public string TeamName { get; set; }
-        public int Count { get; set; }
+        public int MemberCount { get; set; }
         public bool IsQA { get; set; }
     }
 }

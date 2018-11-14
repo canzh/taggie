@@ -24,16 +24,18 @@ namespace Content.Mvc.Services
             _identityUrl = $"{_settings.Value.IdentityUrl}/api/teamuser";
         }
 
-        public async Task<IEnumerable<IdentityResponseModel>> CreateTeamUsers(IdentityRequestModel teamModel)
+        public async Task CreateTeamUsers(IdentityRequestModel teamModel)
         {
             var response = await _apiClient.PostAsJsonAsync(_identityUrl, teamModel);
 
-            if (response.IsSuccessStatusCode)
-            {
-                return JsonConvert.DeserializeObject<IEnumerable<IdentityResponseModel>>(await response.Content.ReadAsStringAsync());
-            }
+            response.EnsureSuccessStatusCode();
+        }
 
-            return null;
+        public async Task<IEnumerable<IdentityResponseModel>> GetTeamMembers(int teamId)
+        {
+            var responseString = await _apiClient.GetStringAsync($"{_identityUrl}/{teamId}");
+
+            return JsonConvert.DeserializeObject<IEnumerable<IdentityResponseModel>>(responseString);
         }
     }
 }
