@@ -36,8 +36,8 @@ namespace Content.Mvc.Controllers
         {
             var team = await _apiService.GetTeamDetail(id);
 
-            var assignments = await _apiService.GetTeamAssignments(id);
-            team.AssignedProjects = assignments;
+            //var assignments = await _apiService.GetTeamAssignments(id);
+            //team.AssignedProjects = assignments;
 
             var members = await _identityService.GetTeamMembers(id);
             team.TeamMembers = members.ToList();

@@ -53,17 +53,21 @@ namespace Content.Mvc.Services
         {
             var responseString = await _apiClient.GetStringAsync(string.Format("{0}/teams/detail?id={1}", _apiUrl, teamId));
 
-            var team = JObject.Parse(responseString);
+            var response = JsonConvert.DeserializeObject<TeamViewModel>(responseString);
 
-            return new TeamViewModel
-            {
-                Id = team.Value<int>("Id"),
-                TeamName = team.Value<string>("TeamName"),
-                Description = team.Value<string>("Description"),
-                MemberCount = team.Value<int>("MemberCount"),
-                Status = (TeamStatus)team.Value<int>("Status"),
-                CreatedDate = team.Value<DateTime>("CreatedDate")
-            };
+            return response;
+
+            //var team = JObject.Parse(responseString);
+
+            //return new TeamViewModel
+            //{
+            //    Id = team.Value<int>("Id"),
+            //    TeamName = team.Value<string>("TeamName"),
+            //    Description = team.Value<string>("Description"),
+            //    MemberCount = team.Value<int>("MemberCount"),
+            //    Status = (TeamStatus)team.Value<int>("Status"),
+            //    CreatedDate = team.Value<DateTime>("CreatedDate")
+            //};
         }
 
         public async Task<List<TeamAssignmentViewModel>> GetTeamAssignments(int teamId)

@@ -1,9 +1,12 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IHtmlLocalizer<SharedResource> SharedHtmlLocalizer
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Taggie Master</title>
+    <title>@ViewData["Title"] - @SharedHtmlLocalizer["Taggie Master"]</title>
 
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
@@ -44,10 +47,11 @@
     <partial name="_CookieConsentPartial" />
 
     <div class="container body-content">
+        <hr />
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; 2018 - Taggie Master</p>
+            <p>&copy; 2018 - @SharedHtmlLocalizer["Taggie Master"]</p>
         </footer>
     </div>
 

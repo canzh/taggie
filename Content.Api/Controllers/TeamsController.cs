@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Content.Api.EFModels;
+using Content.Api.EFModels.dto;
 
 namespace Content.Api.Controllers
 {
@@ -44,7 +45,30 @@ namespace Content.Api.Controllers
                 return NotFound();
             }
 
-            return Ok(team);
+            var assignments = _context.Teamprojects
+                .Where(d => d.TeamId == id)
+                .Include(e => e.Project)
+                .Select(s =>
+                new TeamAssignment
+                {
+                    ProjectId = s.ProjectId,
+                    ProjectName = s.Project.ProjectName,
+                    AssignedItemsCount = s.AssignedProjectItems
+                })
+            .ToList();
+
+            var result = new TeamDto
+            {
+                Id = team.Id,
+                TeamName = team.TeamName,
+                Description = team.Description,
+                MemberCount = team.MemberCount,
+                Status = team.Status,
+                CreatedDate = team.CreatedDate,
+                AssignedProjects = assignments
+            };
+
+            return Ok(result);
         }
 
         [HttpGet("{id}")]

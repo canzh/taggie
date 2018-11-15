@@ -1,97 +1,109 @@
 ﻿@model Content.Mvc.Models.ProjectViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IHtmlLocalizer<SharedResource> SharedHtmlLocalizer
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = @SharedHtmlLocalizer["ProjectDetailsTitle"];
 }
 
-<h2>Details</h2>
-
 <div>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Id)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Id)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.ProjectName)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.ProjectName)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.TotalItems)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.TotalItems)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Status)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Status)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.BaseDir)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.BaseDir)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.CreatedDate)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.CreatedDate)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-    </dl>
-    <hr />
-    <div class="btn-group">
-        <a id="assginItemsToTeam" data-toggle="modal" asp-action="AssignToTeam" asp-route-id="@Model.Id" data-target="#modal-action" class="btn btn-primary">
-            <i class="glyphicon glyphicon-plus"></i>Assign Items To Team
-        </a>
+    <div class="top-buffer"></div>
+    <div class="panel panel-primary">
+        <div class="panel-heading panel-head">@SharedHtmlLocalizer["Project Details"]</div>
+        <div class="panel-body">
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.Id)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Id)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.ProjectName)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.ProjectName)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.TotalItems)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.TotalItems)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Status)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Status)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.BaseDir)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.BaseDir)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.CreatedDate)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.CreatedDate)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Description)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Description)
+                </dd>
+            </dl>
+        </div>
     </div>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Assignments[0].TeamName)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Assignments[0].AssignedItemsCount)
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Assignments)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.TeamName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.AssignedItemsCount)
-                    </td>
-                    @*<td>
-                            @Html.ActionLink("Remove", "Remove", new { id = item.Id })
-                        </td>*@
-                </tr>
-            }
-        </tbody>
-    </table>
+    <hr />
+    <div class="top-buffer"></div>
+    <div class="panel panel-primary">
+        <div class="panel-heading panel-head">@SharedHtmlLocalizer["ProjectAssignmentTeamList"]</div>
+        <div class="panel-body">
+            <div class="btn-group">
+                <a id="assginItemsToTeam" data-toggle="modal" asp-action="AssignToTeam" asp-route-id="@Model.Id" data-target="#modal-action" class="btn btn-primary">
+                    <i class="glyphicon glyphicon-plus"></i> @SharedHtmlLocalizer["Assign Items To Team"]
+                </a>
+            </div>
+            <div class="top-buffer"></div>
+            <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Assignments[0].TeamName)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Assignments[0].AssignedItemsCount)
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Assignments)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.TeamName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.AssignedItemsCount)
+                            </td>
+                            @*<td>
+                                    @Html.ActionLink("Remove", "Remove", new { id = item.Id })
+                                </td>*@
+                        </tr>
+                    }
+                </tbody>
+            </table>
 
+        </div>
+    </div>
 </div>
 <div>
-    @*@Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |*@
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" class="btn btn-primary">
+        <i class="glyphicon glyphicon-backward"></i> @SharedHtmlLocalizer["Back to List"]
+    </a>
 </div>
 
 @await Html.PartialAsync("_Modal")
