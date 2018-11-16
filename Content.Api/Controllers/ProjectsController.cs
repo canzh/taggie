@@ -6,18 +6,23 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Content.Api.EFModels;
+using Content.Api.EFModels.dto;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Content.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ProjectsController : ControllerBase
     {
         private readonly ApiDbContext _context;
+        private readonly IHttpContextAccessor _httpContext;
 
-        public ProjectsController(ApiDbContext context)
+        public ProjectsController(ApiDbContext context, IHttpContextAccessor httpContext)
         {
             _context = context;
+            _httpContext = httpContext;
         }
 
         // GET: api/Projects
@@ -25,6 +30,43 @@ namespace Content.Api.Controllers
         public IEnumerable<Project> GetProject()
         {
             return _context.Project;
+        }
+
+        // GET: api/Projects/taggie
+        [HttpGet]
+        [Route("taggie")]
+        public async Task<IActionResult> GetTaggieProjectList()
+        {
+            var loginUser = _httpContext.HttpContext.User;
+            var teamIdValue = loginUser.Claims.FirstOrDefault(d => d.Type == "team")?.Value;
+
+            if (string.IsNullOrEmpty(teamIdValue))
+            {
+                BadRequest("Can not find team information for the login user!");
+            }
+
+            int teamId;
+
+            if (!int.TryParse(teamIdValue, out teamId))
+            {
+                BadRequest("Can not find team information for the login user!");
+            }
+
+            var projects = _context.Project.Include(e => e.Teamprojects).Where(d => d.Teamprojects.Any(r => r.TeamId == teamId));
+
+            List<TaggieProject> result = new List<TaggieProject>();
+            foreach (var p in projects)
+            {
+                result.Add(new TaggieProject
+                {
+                    Id = p.Id,
+                    ProjectName = p.ProjectName,
+                    Description = p.Description,
+                    AssginedItemsCount = p.Teamprojects.FirstOrDefault(d => d.TeamId == teamId)?.AssignedProjectItems ?? 0
+                });
+            }
+
+            return Ok(result);
         }
 
         // GET: api/Projects/5

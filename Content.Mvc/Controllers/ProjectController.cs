@@ -15,13 +15,11 @@ namespace Content.Mvc.Controllers
     {
         private readonly IStringLocalizer<TeamController> _localizer;
         private readonly IDataService _apiService;
-        private readonly IIdentityService _identityService;
 
-        public ProjectController(IStringLocalizer<TeamController> localizer, IDataService apiService, IIdentityService identityService)
+        public ProjectController(IStringLocalizer<TeamController> localizer, IDataService apiService)
         {
             _localizer = localizer;
             _apiService = apiService;
-            _identityService = identityService;
         }
 
         // GET: Project

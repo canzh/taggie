@@ -71,8 +71,8 @@ namespace taggie
                         new Secret("secret".Sha256())
                     },
 
-                    RedirectUris = { "http://localhost:7003/signin-oidc" },
-                    PostLogoutRedirectUris = { "http://localhost:7003/signout-callback-oidc" },
+                    RedirectUris = { "http://localhost:7004/signin-oidc" },
+                    PostLogoutRedirectUris = { "http://localhost:7004/signout-callback-oidc" },
 
                     AllowedScopes =
                     {

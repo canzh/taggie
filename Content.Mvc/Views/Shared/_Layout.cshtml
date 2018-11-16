@@ -29,6 +29,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
                 </button>
                 <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Taggie Master</a>
             </div>
@@ -39,7 +40,9 @@
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
                     <li><a asp-area="" asp-controller="Team" asp-action="Index">Team</a></li>
                     <li><a asp-area="" asp-controller="Project" asp-action="Index">Project</a></li>
+                    <li><a asp-area="" asp-controller="Taggie" asp-action="Index">Taggie</a></li>
                 </ul>
+                <partial name="_LoginPartial" />
             </div>
         </div>
     </nav>
@@ -75,6 +78,8 @@
         </script>
         <script src="~/js/site.min.js" asp-append-version="true"></script>
     </environment>
+
+    <script src="~/lib/jquery.unobtrusive-ajax.js"></script>
 
     @RenderSection("Scripts", required: false)
 </body>

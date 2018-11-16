@@ -1,0 +1,45 @@
+﻿@model IEnumerable<Content.Mvc.Models.TaggieProjectListViewModel>
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IHtmlLocalizer<SharedResource> SharedHtmlLocalizer
+
+@{
+    ViewData["Title"] = @SharedHtmlLocalizer["TaggieIndexTitle"];
+}
+
+<div class="top-buffer"></div>
+<div class="panel panel-primary">
+    <div class="panel-heading panel-head">@SharedHtmlLocalizer["ProjectList"]</div>
+    <div class="panel-body">
+        <table class="table table-bordered table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ProjectName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.AssginedItemsCount)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ProjectName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.AssginedItemsCount)
+                        </td>
+                        <td>
+                            <a asp-action="Queue" asp-route-id="@item.Id" class="btn btn-info">
+                                <i class="glyphicon glyphicon-dashboard"></i>  @SharedHtmlLocalizer["Queue"]
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -5,6 +5,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Content.Mvc.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 
 namespace Content.Mvc.Controllers
 {
@@ -27,6 +30,18 @@ namespace Content.Mvc.Controllers
             ViewData["Message"] = "Your contact page.";
 
             return View();
+        }
+
+        public async Task Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignOutAsync(OpenIdConnectDefaults.AuthenticationScheme);
+
+            // "Catalog" because UrlHelper doesn't support nameof() for controllers
+            // https://github.com/aspnet/Mvc/issues/5853
+            //var homeUrl = Url.Action(nameof(CatalogController.Index), "Catalog");
+            //return new SignOutResult(OpenIdConnectDefaults.AuthenticationScheme, 
+            //    new AspNetCore.Authentication.AuthenticationProperties { RedirectUri = homeUrl });
         }
 
         public IActionResult Privacy()

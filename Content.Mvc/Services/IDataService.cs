@@ -15,7 +15,9 @@ namespace Content.Mvc.Services
 
         Task<IEnumerable<ProjectViewModel>> GetAllProjects();
         Task<ProjectViewModel> GetProjectDetail(int projectId);
-
         Task AssignProjectItemsToTeam(int projectId, ProjectAssignmentViewModel model);
+
+        Task<List<TaggieProjectListViewModel>> GetTaggieProjectList();
+
     }
 }

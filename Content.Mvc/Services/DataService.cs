@@ -117,5 +117,13 @@ namespace Content.Mvc.Services
             response.EnsureSuccessStatusCode();
         }
 
+        public async Task<List<TaggieProjectListViewModel>> GetTaggieProjectList()
+        {
+            var responseString = await _apiClient.GetStringAsync(string.Format("{0}/projects/taggie", _apiUrl));
+
+            var response = JsonConvert.DeserializeObject<List<TaggieProjectListViewModel>>(responseString);
+
+            return response;
+        }
     }
 }
