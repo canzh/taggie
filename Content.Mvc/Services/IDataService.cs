@@ -19,5 +19,7 @@ namespace Content.Mvc.Services
 
         Task<List<TaggieProjectListViewModel>> GetTaggieProjectList();
 
+        Task<List<ProjectCategoryViewModel>> GetProjectCategories(int projectId);
+        Task<List<ProjectCategoryViewModel>> GetProjectSubcategories(int projectId);
     }
 }

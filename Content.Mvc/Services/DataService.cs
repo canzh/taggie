@@ -125,5 +125,32 @@ namespace Content.Mvc.Services
 
             return response;
         }
+
+        public async Task<List<ProjectCategoryViewModel>> GetProjectCategories(int projectId)
+        {
+            var responseString = await _apiClient.GetStringAsync(string.Format("{0}/projectcategories", _apiUrl));
+
+            var response = JsonConvert.DeserializeObject<List<ProjectCategoryViewModel>>(responseString);
+
+            return response;
+        }
+
+        public async Task<List<ProjectCategoryViewModel>> GetProjectSubcategories(int projectId)
+        {
+            var responseString = await _apiClient.GetStringAsync(string.Format("{0}/projectsubcategories", _apiUrl));
+
+            var response = JsonConvert.DeserializeObject<List<ProjectCategoryViewModel>>(responseString);
+
+            return response;
+        }
+
+        public async Task<List<ProjectCategoryViewModel>> GetProjectMetaInfo(int projectId)
+        {
+            var responseString = await _apiClient.GetStringAsync(string.Format("{0}/projectcategories", _apiUrl));
+
+            var response = JsonConvert.DeserializeObject<List<ProjectCategoryViewModel>>(responseString);
+
+            return response;
+        }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Content.Mvc.Models;
 using Content.Mvc.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -34,10 +35,23 @@ namespace Content.Mvc.Controllers
             return View(list);
         }
 
-        // GET: Taggie/Details/5
-        public ActionResult Queue(int id)
+        // GET: Taggie/Queue/5
+        public async Task<IActionResult> Queue(int projectId)
         {
-            return View();
+            var categories = await _apiService.GetProjectCategories(projectId);
+            var subcategories = await _apiService.GetProjectSubcategories(projectId);
+
+
+            TaggieQueueViewModel viewModel = new TaggieQueueViewModel();
+            viewModel.AllCategories = categories.Select(d => d.Name).ToList();
+            viewModel.AllSubcategories = subcategories.Select(d => d.Name).ToList();
+
+            viewModel.ProjectName = "360 Project";
+            viewModel.TotalProjectItems = 200_000;
+            viewModel.RemainingProjectItems = 100_000;
+            viewModel.TaggieFinishedItems = 100;
+
+            return View(viewModel);
         }
 
     }

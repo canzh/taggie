@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Content.Api.EFModels.enums;
+using System;
 using System.Collections.Generic;
 
 namespace Content.Api.EFModels
@@ -17,7 +18,7 @@ namespace Content.Api.EFModels
         public string OriginalUrl { get; set; }
         public string RelativeDir { get; set; }
         public string LocalFileName { get; set; }
-        public byte Status { get; set; }
+        public ProjectItemStatus Status { get; set; }
         public DateTime CreatedDate { get; set; }
 
         public Project Project { get; set; }

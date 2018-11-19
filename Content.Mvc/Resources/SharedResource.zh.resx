@@ -135,6 +135,9 @@
   <data name="BaseDir" xml:space="preserve">
     <value>主目录</value>
   </data>
+  <data name="Categories" xml:space="preserve">
+    <value>一级分类</value>
+  </data>
   <data name="Create New" xml:space="preserve">
     <value>新建</value>
   </data>
@@ -147,11 +150,20 @@
   <data name="Details" xml:space="preserve">
     <value>详情</value>
   </data>
+  <data name="FinishedItems" xml:space="preserve">
+    <value>已完成</value>
+  </data>
   <data name="Id" xml:space="preserve">
     <value>标识符</value>
   </data>
+  <data name="Input to search ..." xml:space="preserve">
+    <value>输入过滤词</value>
+  </data>
   <data name="IsQATeam" xml:space="preserve">
     <value>是否审核团队</value>
+  </data>
+  <data name="Keywords" xml:space="preserve">
+    <value>关键词</value>
   </data>
   <data name="MemberCount" xml:space="preserve">
     <value>团队人员数</value>
@@ -174,11 +186,23 @@
   <data name="ProjectList" xml:space="preserve">
     <value>项目列表</value>
   </data>
+  <data name="ProjectName" xml:space="preserve">
+    <value>项目</value>
+  </data>
   <data name="Queue" xml:space="preserve">
     <value>任务</value>
   </data>
+  <data name="RemainingProjectItems" xml:space="preserve">
+    <value>任务剩余数</value>
+  </data>
   <data name="Role" xml:space="preserve">
     <value>用户角色</value>
+  </data>
+  <data name="Select Categories" xml:space="preserve">
+    <value>请选择一级分类</value>
+  </data>
+  <data name="Select Subcategories" xml:space="preserve">
+    <value>请选择二级分类</value>
   </data>
   <data name="Status" xml:space="preserve">
     <value>状态</value>
@@ -191,6 +215,9 @@
   </data>
   <data name="StatusDisabled" xml:space="preserve">
     <value>失效</value>
+  </data>
+  <data name="Subcategories" xml:space="preserve">
+    <value>二级分类</value>
   </data>
   <data name="Taggie Master" xml:space="preserve">
     <value>标记云</value>
@@ -218,6 +245,9 @@
   </data>
   <data name="TotalItems" xml:space="preserve">
     <value>总量</value>
+  </data>
+  <data name="TotalProjectItems" xml:space="preserve">
+    <value>任务总数</value>
   </data>
   <data name="UserName" xml:space="preserve">
     <value>用户名</value>
