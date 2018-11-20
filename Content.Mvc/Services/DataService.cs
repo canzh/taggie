@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Content.Mvc.Models;
@@ -144,13 +145,37 @@ namespace Content.Mvc.Services
             return response;
         }
 
-        public async Task<List<ProjectCategoryViewModel>> GetProjectMetaInfo(int projectId)
+        public async Task<TaggieQueueViewModel> GetNextQueueItem(int projectId)
         {
-            var responseString = await _apiClient.GetStringAsync(string.Format("{0}/projectcategories", _apiUrl));
+            HttpResponseMessage response = await _apiClient.GetAsync(string.Format("{0}/projectitems/next?projectId={1}", _apiUrl, projectId));
 
-            var response = JsonConvert.DeserializeObject<List<ProjectCategoryViewModel>>(responseString);
+            if (response.IsSuccessStatusCode)
+            {
+                var responseString = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<TaggieQueueViewModel>(responseString);
+            }
 
-            return response;
+            if (response.StatusCode == HttpStatusCode.NoContent)
+            {
+                return null;
+            }
+
+            response.EnsureSuccessStatusCode();
+
+            return null;
         }
+
+        public async Task<string> GetQueueItemContent(int projectItemId)
+        {
+            var responseString = await _apiClient.GetStringAsync(string.Format("{0}/QueueItemContent/{1}", _apiUrl, projectItemId));
+            return responseString;
+        }
+
+        public async Task SubmitQueueItem(TaggieQueueViewModel queueItem)
+        {
+
+        }
+
+
     }
 }

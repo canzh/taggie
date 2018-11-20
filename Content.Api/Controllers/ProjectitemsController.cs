@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Content.Api.EFModels;
 using Content.Api.EFModels.enums;
+using Content.Api.EFModels.dto;
 
 namespace Content.Api.Controllers
 {
@@ -37,15 +38,23 @@ namespace Content.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            var projectitem = await _context.Projectitem.FirstOrDefaultAsync(
+            var projectitem = await _context.Projectitem.Include(e => e.Project).FirstOrDefaultAsync(
                 d => d.Status == ProjectItemStatus.New);
 
             if (projectitem == null)
             {
-                return NotFound();
+                return NoContent();
             }
 
-            return Ok(projectitem);
+            QueueItemDto result = new QueueItemDto
+            {
+                ProjectId = projectitem.Project.Id,
+                ProjectName = projectitem.Project.ProjectName,
+                TotalProjectItems = projectitem.Project.TotalItems,
+                ProjectItemId = projectitem.Id,
+            };
+
+            return Ok(result);
         }
 
         // GET: api/Projectitems/5

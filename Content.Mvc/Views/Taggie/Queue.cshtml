@@ -6,147 +6,153 @@
     ViewData["Title"] = @SharedHtmlLocalizer["Queue"];
 }
 
-
-<div class="clearfix">
-    <div class="pull-left">
-        <a id="select-category" class="btn btn-primary" onclick="showCategoryModal();" accesskey="c"
-           data-toggle="popover" data-trigger="focus" data-placement="bottom" data-content="@SharedHtmlLocalizer["Please select categories!"]">
-            <i class="glyphicon glyphicon-plus"></i> @SharedHtmlLocalizer["Select Categories"]
-        </a>
-        <a id="select-subcategory" class="btn btn-primary" onclick="showSubcategoryModal();" accesskey="s"
-           data-toggle="popover" data-trigger="focus" data-placement="bottom" data-content="@SharedHtmlLocalizer["Please select subcategories!"]">
-            <i class="glyphicon glyphicon-plus"></i> @SharedHtmlLocalizer["Select Subcategories"]
-        </a>
-        @*<a id="input-keyword" class="btn btn-primary" onclick="showKeywordModal();" accesskey="w">
-            <i class="glyphicon glyphicon-plus"></i> @SharedHtmlLocalizer["Input Keywords"]
-        </a>*@
+@if (Model == null)
+{
+    <div class="alert alert-success">
+        @SharedHtmlLocalizer["<strong>Finished!</strong> there is no more task available."]
     </div>
-    <div class="pull-right">
-        <a id="result-submit" class="btn btn-primary" onclick="submitQueueItem();" accesskey="q">
-            <i class="glyphicon glyphicon-send"></i> @SharedHtmlLocalizer["Submit"]
-        </a>
+}
+else
+{
+    <div class="clearfix">
+        <div class="pull-left">
+            <a id="select-category" class="btn btn-primary" onclick="showCategoryModal();" accesskey="c"
+               data-toggle="popover" data-trigger="focus" data-placement="bottom" data-content="@SharedHtmlLocalizer[" Please select categories!"]">
+                <i class="glyphicon glyphicon-plus"></i> @SharedHtmlLocalizer["Select Categories"]
+            </a>
+            <a id="select-subcategory" class="btn btn-primary" onclick="showSubcategoryModal();" accesskey="s"
+               data-toggle="popover" data-trigger="focus" data-placement="bottom" data-content="@SharedHtmlLocalizer[" Please select subcategories!"]">
+                <i class="glyphicon glyphicon-plus"></i> @SharedHtmlLocalizer["Select Subcategories"]
+            </a>
+            @*<a id="input-keyword" class="btn btn-primary" onclick="showKeywordModal();" accesskey="w">
+                    <i class="glyphicon glyphicon-plus"></i> @SharedHtmlLocalizer["Input Keywords"]
+                </a>*@
+        </div>
+        <div class="pull-right">
+            <a id="result-submit" class="btn btn-primary" onclick="submitQueueItem();" accesskey="q">
+                <i class="glyphicon glyphicon-send"></i> @SharedHtmlLocalizer["Submit"]
+            </a>
+        </div>
     </div>
-</div>
-<hr />
-
-<div class="panel panel-primary">
-    <div class="panel-heading">
-        @Html.DisplayNameFor(model => model.ProjectName) :
-        @Html.DisplayFor(model => model.ProjectName)
-        @*<h4>
-                @Html.DisplayNameFor(model => model.TaggieFinishedItems) :
-                @Html.DisplayFor(model => model.TaggieFinishedItems)
-            </h4>
-            <div class="pull-right">
-                <h4>
-                    @Html.DisplayFor(model => model.RemainingProjectItems) /
-                    @Html.DisplayFor(model => model.TotalProjectItems)
+    <hr />
+    <div class="hide" id="project-item-id">@Html.DisplayFor(model => model.ProjectItemId)</div>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            @Html.DisplayNameFor(model => model.ProjectName) :
+            @Html.DisplayFor(model => model.ProjectName)
+            @*<h4>
+                    @Html.DisplayNameFor(model => model.TaggieFinishedItems) :
+                    @Html.DisplayFor(model => model.TaggieFinishedItems)
                 </h4>
-            </div>*@
+                <div class="pull-right">
+                    <h4>
+                        @Html.DisplayFor(model => model.RemainingProjectItems) /
+                        @Html.DisplayFor(model => model.TotalProjectItems)
+                    </h4>
+                </div>*@
+        </div>
+        <div class="panel-body">
+            Panel content
+        </div>
     </div>
-    <div class="panel-body">
-
-
-        Panel content
+    <div>
+        <a asp-action="Index" class="btn btn-primary">
+            <i class="glyphicon glyphicon-backward"></i> @SharedHtmlLocalizer["Back to List"]
+        </a>
     </div>
-</div>
-<div>
-    <a asp-action="Index" class="btn btn-primary">
-        <i class="glyphicon glyphicon-backward"></i> @SharedHtmlLocalizer["Back to List"]
-    </a>
-</div>
 
-<div aria-labelledby="modal-action-label" role="dialog" tabindex="-1" id="modal-category" class="modal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">@SharedHtmlLocalizer["Select Categories"]</h4>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="form-group">
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <input type="search" class="form-control" id="search" placeholder="@SharedHtmlLocalizer["Input to search ..."]">
+    <div aria-labelledby="modal-action-label" role="dialog" tabindex="-1" id="modal-category" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@SharedHtmlLocalizer["Select Categories"]</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-sm-12 col-md-12 col-lg-12">
+                                <input type="search" class="form-control" id="search" placeholder="@SharedHtmlLocalizer[" Input to search ..."]">
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="form-group">
-                        <div class="searchable-container">
-                            @foreach (var category in Model.AllCategories)
-                            {
-                                <div class="items col-xs-5 col-sm-5 col-md-4 col-lg-4">
-                                    <div class="info-block block-info clearfix">
-                                        <div data-toggle="buttons" class="btn-group bizmoduleselect">
-                                            <label class="btn btn-default btn-sm">
-                                                <div class="bizcontent">
-                                                    @*<span class="glyphicon glyphicon-ok glyphicon-lg"></span>*@
-                                                    <input type="checkbox" name="" autocomplete="off" value="">
-                                                    <h5>@category</h5>
-                                                </div>
-                                            </label>
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="searchable-container">
+                                @foreach (var category in Model.AllCategories)
+                                {
+                                    <div class="items col-xs-5 col-sm-5 col-md-4 col-lg-4">
+                                        <div class="info-block block-info clearfix">
+                                            <div data-toggle="buttons" class="btn-group bizmoduleselect">
+                                                <label class="btn btn-default btn-sm">
+                                                    <div class="bizcontent">
+                                                        @*<span class="glyphicon glyphicon-ok glyphicon-lg"></span>*@
+                                                        <input type="checkbox" name="" autocomplete="off" value="">
+                                                        <h5>@category</h5>
+                                                    </div>
+                                                </label>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            }
+                                }
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
-                <button data-dismiss="modal" class="btn btn-success" type="button">OK</button>
+                <div class="modal-footer">
+                    <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
+                    <button data-dismiss="modal" class="btn btn-success" type="button">OK</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<div aria-labelledby="modal-action-label" role="dialog" tabindex="-1" id="modal-subcategory" class="modal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">@SharedHtmlLocalizer["Select Subcategories"]</h4>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="form-group">
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <input type="search" class="form-control" id="search-sub" placeholder="@SharedHtmlLocalizer["Input to search ..."]">
+    <div aria-labelledby="modal-action-label" role="dialog" tabindex="-1" id="modal-subcategory" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@SharedHtmlLocalizer["Select Subcategories"]</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-sm-12 col-md-12 col-lg-12">
+                                <input type="search" class="form-control" id="search-sub" placeholder="@SharedHtmlLocalizer[" Input to search ..."]">
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="form-group">
-                        <div class="searchable-container">
-                            @foreach (var subcategory in Model.AllSubcategories)
-                            {
-                                <div class="items col-xs-5 col-sm-5 col-md-4 col-lg-4">
-                                    <div class="info-block block-info clearfix">
-                                        <div data-toggle="buttons" class="btn-group bizmoduleselect">
-                                            <label class="btn btn-default btn-sm">
-                                                <div class="bizcontent">
-                                                    @*<span class="glyphicon glyphicon-ok glyphicon-lg"></span>*@
-                                                    <input type="checkbox" name="" autocomplete="off" value="">
-                                                    <h5>@subcategory</h5>
-                                                </div>
-                                            </label>
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="searchable-container">
+                                @foreach (var subcategory in Model.AllSubcategories)
+                                {
+                                    <div class="items col-xs-5 col-sm-5 col-md-4 col-lg-4">
+                                        <div class="info-block block-info clearfix">
+                                            <div data-toggle="buttons" class="btn-group bizmoduleselect">
+                                                <label class="btn btn-default btn-sm">
+                                                    <div class="bizcontent">
+                                                        @*<span class="glyphicon glyphicon-ok glyphicon-lg"></span>*@
+                                                        <input type="checkbox" name="" autocomplete="off" value="">
+                                                        <h5>@subcategory</h5>
+                                                    </div>
+                                                </label>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            }
+                                }
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
-                <button data-dismiss="modal" class="btn btn-success" type="button">OK</button>
+                <div class="modal-footer">
+                    <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
+                    <button data-dismiss="modal" class="btn btn-success" type="button">OK</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
+}
 
 @section Scripts {
     <script src="~/lib/jquery-ui-1.12.1/jquery-ui.js"></script>
@@ -214,6 +220,19 @@
 
         $('.modal-dialog').draggable({
             handle: ".modal-header"
+        });
+
+        // load content data of the task
+        $.ajax({
+            type: 'GET',
+            url: "/Taggie/QueueItemContent/" + $('#project-item-id').text(),
+            success: function (data) {
+                $('.panel-body').html(data);
+            },
+            fail: function (xhr, textStatus, errorThrown) {
+                var warn = '<div class="alert alert-danger">  @SharedHtmlLocalizer["<strong>Error!</strong> Failed to load content."] </div>';
+                $('.panel-body').html(warn);
+            }
         });
 
         $(function () {

@@ -21,5 +21,9 @@ namespace Content.Mvc.Services
 
         Task<List<ProjectCategoryViewModel>> GetProjectCategories(int projectId);
         Task<List<ProjectCategoryViewModel>> GetProjectSubcategories(int projectId);
+
+        Task<TaggieQueueViewModel> GetNextQueueItem(int projectId);
+        Task<string> GetQueueItemContent(int projectItemId);
+        Task SubmitQueueItem(TaggieQueueViewModel queueItem);
     }
 }
