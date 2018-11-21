@@ -141,6 +141,9 @@
   <data name="Categories" xml:space="preserve">
     <value>一级分类</value>
   </data>
+  <data name="Content failed to load" xml:space="preserve">
+    <value>加载失败</value>
+  </data>
   <data name="Create New" xml:space="preserve">
     <value>新建</value>
   </data>
@@ -152,6 +155,9 @@
   </data>
   <data name="Details" xml:space="preserve">
     <value>详情</value>
+  </data>
+  <data name="Failed" xml:space="preserve">
+    <value>出错</value>
   </data>
   <data name="FinishedItems" xml:space="preserve">
     <value>已完成</value>
@@ -221,6 +227,9 @@
   </data>
   <data name="Subcategories" xml:space="preserve">
     <value>二级分类</value>
+  </data>
+  <data name="Submission Failed" xml:space="preserve">
+    <value>提交失败</value>
   </data>
   <data name="Taggie Master" xml:space="preserve">
     <value>标记云</value>

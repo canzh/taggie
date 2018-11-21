@@ -7,15 +7,15 @@
 type: string
 int value to configure the queue size
 
-### taggie:project:queue:123
+### taggie:project:queue:{projectid}
 
 type: list
 stores at most 1000 project item ids with status=New
 
-### taggie:user:queue:123456
+### taggie:user:queue:{projectid}:{userid}
 
-type: string
-stores current working item id for each user, the values are from taggie:project:queue:1
+type: sorted-set
+stores current work in progress item id for each user, with timestampe as score
 
 generation: peek the first element from project item list, retrieve metadata from database,
 then stores them as json
@@ -27,43 +27,61 @@ expire: expired after a period of time to avoid
 type: string
 stores current online user count
 
-### taggie:project:statistics:123
+### taggie:project:metadata:{projectid}
 
 type: hash
 stores project statistics
 
+project-name: project1
 total-items: 100
 remaining-items: 50
 
-### taggie:topused:keywords:123
+### taggie:topused:keywords:{projectid}
 
 type: sorted-set
 stores top 5 frequently used keywords
 
-### taggie:topused:categories:123
+### taggie:topused:categories:{projectid}
 
 type: sorted-set
 stores top 5 frequently used categories
 
-### taggie:topused:subcategories:123
+### taggie:topused:subcategories:{projectid}
 
 type: sorted-set
 stores top 5 frequently used subcategories
 
-### taggie:categories:123
+### taggie:categories:{projectid}
 
 type: list
 fixed set of elements
 
-### taggie:subcategories:123
+### taggie:subcategories:{projectid}
 
 type: list
 fixed set of elements
 
-### taggie:keywords:123
+### taggie:keywords:{projectid}
 
-type: list
+type: sorted-set
 dynamicly changes when new keyword was added
+
+### taggie:team:statistics:{projectid}:{teamid}
+
+type: hash
+record team users effort statistics as well as whole team
+
+sample:
+{
+    "team:type": taggie,
+    "team:finished": 1000,
+    "team:incorrect": 100,
+    "1:finished": 200,
+    "1:incorrect": 5,
+    "2:finished": 500,
+    "2:incorrect": 10,
+    ...
+}
 
 ## Backgroud Job
 
@@ -79,11 +97,13 @@ handler for finished queue items
 ## Message Queue
 
 after finish tagging a item, there are several thing to do:
-1.update project item status
-1.create finished-by record
-1.add category link
-1.add subcategory link
-1.store keywords and add link
-1.update taggie statistics
-1.update team statistics
-1.update taggie:topused:[type]
+
+1. update project item status
+1. create finished-by record: projectitemeffort
+1. add category link
+1. add subcategory link
+1. store keywords
+1. update taggie statistics
+1. update team statistics
+1. delete project item id in project wip queue
+1. delete project item id in user queue

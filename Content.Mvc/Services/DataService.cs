@@ -129,7 +129,7 @@ namespace Content.Mvc.Services
 
         public async Task<List<ProjectCategoryViewModel>> GetProjectCategories(int projectId)
         {
-            var responseString = await _apiClient.GetStringAsync(string.Format("{0}/projectcategories", _apiUrl));
+            var responseString = await _apiClient.GetStringAsync(string.Format("{0}/projectcategories?projectId={1}", _apiUrl, projectId));
 
             var response = JsonConvert.DeserializeObject<List<ProjectCategoryViewModel>>(responseString);
 
@@ -138,7 +138,7 @@ namespace Content.Mvc.Services
 
         public async Task<List<ProjectCategoryViewModel>> GetProjectSubcategories(int projectId)
         {
-            var responseString = await _apiClient.GetStringAsync(string.Format("{0}/projectsubcategories", _apiUrl));
+            var responseString = await _apiClient.GetStringAsync(string.Format("{0}/projectsubcategories?projectId={1}", _apiUrl, projectId));
 
             var response = JsonConvert.DeserializeObject<List<ProjectCategoryViewModel>>(responseString);
 
@@ -171,9 +171,13 @@ namespace Content.Mvc.Services
             return responseString;
         }
 
-        public async Task SubmitQueueItem(TaggieQueueViewModel queueItem)
+        public async Task SubmitQueueItem(TaggieQueueSubmitModel submitItem)
         {
+            var jsonContent = new StringContent(JsonConvert.SerializeObject(submitItem), System.Text.Encoding.UTF8, "application/json");
 
+            var response = await _apiClient.PostAsync($"{_apiUrl}/projectitems/submit", jsonContent);
+
+            response.EnsureSuccessStatusCode();
         }
 
 

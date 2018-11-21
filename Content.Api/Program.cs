@@ -12,9 +12,27 @@ namespace Content.Api
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
+            var seed = args.Contains("--seed");
+            if (seed)
+            {
+                args = args.Except(new[] { "--seed" }).ToArray();
+            }
+
+            var host = CreateWebHostBuilder(args).Build();
+
+            if (seed)
+            {
+                await RedisSeed.SeedAsync(host.Services);
+            }
+
+            if (args.Contains("--exit"))
+            {
+                return;
+            }
+
+            host.Run();
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>

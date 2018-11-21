@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Content.Api.EFModels;
 using Content.Api.EFModels.enums;
 using Content.Api.EFModels.dto;
+using Content.Api.Common;
+using Content.Api.Event;
 
 namespace Content.Api.Controllers
 {
@@ -16,17 +18,19 @@ namespace Content.Api.Controllers
     public class ProjectitemsController : ControllerBase
     {
         private readonly ApiDbContext _context;
+        private readonly IHttpContextAccessor _httpContext;
+        private readonly UserAccessValidation _accessValidation;
+        private readonly RedisUtil _redis;
 
-        public ProjectitemsController(ApiDbContext context)
+        public ProjectitemsController(ApiDbContext context,
+            IHttpContextAccessor httpContext,
+            UserAccessValidation accessValidation,
+            RedisUtil redis)
         {
             _context = context;
-        }
-
-        // GET: api/Projectitems
-        [HttpGet]
-        public IEnumerable<Projectitem> GetProjectitem()
-        {
-            return _context.Projectitem;
+            _httpContext = httpContext;
+            _accessValidation = accessValidation;
+            _redis = redis;
         }
 
         [HttpGet("{projectId}")]
@@ -38,20 +42,25 @@ namespace Content.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            var projectitem = await _context.Projectitem.Include(e => e.Project).FirstOrDefaultAsync(
-                d => d.Status == ProjectItemStatus.New);
+            //var projectitem = await _context.Projectitem.Include(e => e.Project).FirstOrDefaultAsync(
+            //    d => d.Status == ProjectItemStatus.New);
 
-            if (projectitem == null)
+            var assignedItemId = await _redis.AssignQueueItemToUser(projectId, _accessValidation.GetUserSubId());
+
+            if (assignedItemId == 0)
             {
                 return NoContent();
             }
 
+            var pojectInfo = await _redis.GetProjectInfo(projectId);
+
             QueueItemDto result = new QueueItemDto
             {
-                ProjectId = projectitem.Project.Id,
-                ProjectName = projectitem.Project.ProjectName,
-                TotalProjectItems = projectitem.Project.TotalItems,
-                ProjectItemId = projectitem.Id,
+                ProjectId = projectId,
+                ProjectName = pojectInfo.ProjectName,
+                TotalProjectItems = pojectInfo.TotalItems,
+                RemainingProjectItems = pojectInfo.RemainingItems,
+                ProjectItemId = assignedItemId,
             };
 
             return Ok(result);
@@ -76,80 +85,46 @@ namespace Content.Api.Controllers
             return Ok(projectitem);
         }
 
-        // PUT: api/Projectitems/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutProjectitem([FromRoute] int id, [FromBody] Projectitem projectitem)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (id != projectitem.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(projectitem).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ProjectitemExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
         // POST: api/Projectitems
         [HttpPost]
-        public async Task<IActionResult> PostProjectitem([FromBody] Projectitem projectitem)
+        [Route("submit")]
+        public async Task<IActionResult> SubmitQueueItem([FromBody] QueueItemSubmitDto projectitem)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _context.Projectitem.Add(projectitem);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetProjectitem", new { id = projectitem.Id }, projectitem);
-        }
-
-        // DELETE: api/Projectitems/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProjectitem([FromRoute] int id)
-        {
-            if (!ModelState.IsValid)
+            var item = await _context.Projectitem.FindAsync(projectitem.ProjectItemId);
+            if (item == null)
             {
-                return BadRequest(ModelState);
+                return BadRequest($"ProjectItem does not exist with Id: {projectitem.ProjectItemId}");
             }
 
-            var projectitem = await _context.Projectitem.FindAsync(id);
-            if (projectitem == null)
+            if (!await _accessValidation.IfQueueItemAssignedToUser(item.ProjectId, projectitem.ProjectItemId))
             {
-                return NotFound();
+                return BadRequest($"Forbidden to edit item which not assigned to you: {projectitem.ProjectItemId}");
             }
 
-            _context.Projectitem.Remove(projectitem);
-            await _context.SaveChangesAsync();
+            var cIds = await _redis.ConvertCategoryNames(item.ProjectId, projectitem.CategoryNames);
+            var scIds = await _redis.ConvertSubcategoryNames(item.ProjectId, projectitem.SubcategoryNames);
+            var userId = _accessValidation.GetUserSubId();
 
-            return Ok(projectitem);
-        }
+            var tevent = new TaggedEvent
+            {
+                TeamId = _accessValidation.GetUserTeamId(),
+                ProjectId = item.ProjectId,
+                ProjectItemId = projectitem.ProjectItemId,
+                TaggedUserId = userId,
+                CategoryIds = cIds,
+                SubcategoryIds = scIds,
+                Keywords = projectitem.Keywords
+            };
 
-        private bool ProjectitemExists(int id)
-        {
-            return _context.Projectitem.Any(e => e.Id == id);
+            await _redis.PublishTaggedItem(tevent);
+            await _redis.SetUserSubmitted(item.ProjectId, userId, true);
+
+            return Ok();
         }
     }
 }

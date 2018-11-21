@@ -37,17 +37,17 @@ namespace Content.Mvc.Controllers
         }
 
         // GET: Taggie/Queue/5
-        public async Task<IActionResult> Queue(int projectId)
+        public async Task<IActionResult> Queue([FromRoute] int id)
         {
-            var viewModel = await _apiService.GetNextQueueItem(projectId);
+            var viewModel = await _apiService.GetNextQueueItem(id);
 
             if (viewModel == null)
             {
                 return View(null);
             }
 
-            var categories = await _apiService.GetProjectCategories(projectId);
-            var subcategories = await _apiService.GetProjectSubcategories(projectId);
+            var categories = await _apiService.GetProjectCategories(id);
+            var subcategories = await _apiService.GetProjectSubcategories(id);
 
             viewModel.AllCategories = categories.Select(d => d.Name).ToList();
             viewModel.AllSubcategories = subcategories.Select(d => d.Name).ToList();
@@ -59,6 +59,13 @@ namespace Content.Mvc.Controllers
         {
             var content = await _apiService.GetQueueItemContent(id);
             return Ok(HttpUtility.HtmlEncode(content));
+        }
+
+        public async Task<IActionResult> Submit(TaggieQueueSubmitModel model)
+        {
+            await _apiService.SubmitQueueItem(model);
+
+            return Ok();
         }
     }
 }

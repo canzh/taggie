@@ -4,14 +4,14 @@ using System.Collections.Generic;
 
 namespace Content.Api.EFModels
 {
-    public partial class Projectitemsubcategories
+    public partial class Projectitemeffort
     {
         public int Id { get; set; }
         public int ProjectItemId { get; set; }
-        public int SubCategoryId { get; set; }
-        public UserRoleType AddedByRole { get; set; }
+        public string EffortUserId { get; set; }
+        public UserRoleType EffortUserRole { get; set; }
+        public DateTime CreatedDate { get; set; }
 
         public Projectitem ProjectItem { get; set; }
-        public Projectsubcategory SubCategory { get; set; }
     }
 }

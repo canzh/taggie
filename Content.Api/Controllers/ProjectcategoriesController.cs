@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Content.Api.EFModels;
+using Content.Api.Common;
 
 namespace Content.Api.Controllers
 {
@@ -14,36 +15,21 @@ namespace Content.Api.Controllers
     public class ProjectcategoriesController : ControllerBase
     {
         private readonly ApiDbContext _context;
+        private readonly RedisUtil _redis;
 
-        public ProjectcategoriesController(ApiDbContext context)
+        public ProjectcategoriesController(ApiDbContext context, RedisUtil redis)
         {
             _context = context;
+            _redis = redis;
         }
 
-        // GET: api/Projectcategories
+        // GET: api/Projectcategories?projectId=1
         [HttpGet]
-        public IEnumerable<Projectcategory> GetProjectcategory()
+        public async Task<IActionResult> GetProjectcategory([FromQuery] int projectId)
         {
-            return _context.Projectcategory;
-        }
-
-        // GET: api/Projectcategories/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetProjectcategory([FromRoute] int id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var projectcategory = await _context.Projectcategory.FindAsync(id);
-
-            if (projectcategory == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(projectcategory);
+            var categories = await _redis.GetProjectCategories(projectId);
+            var model = categories.Select(d => new { Name = d }).ToList();
+            return Ok(model);
         }
 
         // PUT: api/Projectcategories/5

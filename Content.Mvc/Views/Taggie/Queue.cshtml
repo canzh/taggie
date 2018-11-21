@@ -52,7 +52,19 @@ else
                 </div>*@
         </div>
         <div class="panel-body">
-            Panel content
+            <div class="alert alert-danger" role="alert" id="submit-alert">
+                <h4 class="alert-heading">@SharedHtmlLocalizer["Failed"]!</h4>
+                <p>@SharedHtmlLocalizer["Submission Failed"]!</p>
+                <hr>
+                <p class="mb-0"></p>
+            </div>
+            <div class="alert alert-danger" role="alert" id="load-alert">
+                <h4 class="alert-heading">@SharedHtmlLocalizer["Failed"]!</h4>
+                <p>@SharedHtmlLocalizer["Content failed to load"]!</p>
+                <hr>
+                <p class="mb-0"></p>
+            </div>
+            <div id="panel-content"></div>
         </div>
     </div>
     <div>
@@ -165,7 +177,7 @@ else
             $('#modal-category .searchable-container .items label').filter(function () {
                 return $(this).hasClass('active');
             }).each(function (index) {
-                categories.push($(this).text());
+                categories.push($(this).text().trim());
             });
 
             if (categories.length == 0) {
@@ -178,13 +190,37 @@ else
             $('#modal-subcategory .searchable-container .items label').filter(function () {
                 return $(this).hasClass('active');
             }).each(function (index) {
-                subcategories.push($(this).text());
+                subcategories.push($(this).text().trim());
             });
 
             if (subcategories.length == 0) {
                 $('#select-subcategory').popover('show');
                 return;
             }
+
+            var request = $.ajax({
+                type: "POST",
+                url: "/taggie/submit",
+                data: {
+                    ProjectItemId: $('#project-item-id').text(),
+                    CategoryNames: categories,
+                    SubcategoryNames: subcategories,
+                    Keywords: "a,b"
+                }
+            });
+
+            request.done(function (response, textStatus, jqXHR) {
+                location.reload(true); // refresh page to get next task
+            });
+
+            request.fail(function (jqXHR, textStatus, errorThrown) {
+                $('#submit-alert p').text(errorThrown);
+                $('#submit-alert').show();
+            });
+
+            request.always(function () {
+
+            });
         }
 
         function showCategoryModal() {
@@ -222,27 +258,29 @@ else
             handle: ".modal-header"
         });
 
-        // load content data of the task
-        $.ajax({
-            type: 'GET',
-            url: "/Taggie/QueueItemContent/" + $('#project-item-id').text(),
-            success: function (data) {
-                $('.panel-body').html(data);
-            },
-            fail: function (xhr, textStatus, errorThrown) {
-                var warn = '<div class="alert alert-danger">  @SharedHtmlLocalizer["<strong>Error!</strong> Failed to load content."] </div>';
-                $('.panel-body').html(warn);
-            }
-        });
-
         $(function () {
+            // load content data of the task
+            if ($('#project-item-id').length) {
+                $.ajax({
+                    type: 'GET',
+                    url: "/Taggie/QueueItemContent/" + $('#project-item-id').text(),
+                    success: function (data) {
+                        $('#panel-content').text(data);
+                    },
+                    fail: function (xhr, textStatus, errorThrown) {
+                        $('#load-alert p').text(errorThrown);
+                        $('#load-alert').show();
+                    }
+                });
+            }
+
             $('#search').on('keyup', function (e) {
                 var pattern = $(this).val();
 
                 $('.searchable-container .items', $('#modal-category')).hide();
 
                 var filtered = $('.searchable-container .items', $('#modal-category')).filter(function () {
-                    return $(this).text().match(new RegExp(pattern, 'i'));
+                    return $(this).text().trim().match(new RegExp(pattern, 'i'));
                 });
 
                 filtered.show();
@@ -264,7 +302,7 @@ else
                 $('.searchable-container .items', $('#modal-subcategory')).hide();
 
                 var filtered = $('.searchable-container .items', $('#modal-subcategory')).filter(function () {
-                    return $(this).text().match(new RegExp(pattern, 'i'));
+                    return $(this).text().trim().match(new RegExp(pattern, 'i'));
                 });
 
                 filtered.show();

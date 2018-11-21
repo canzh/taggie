@@ -1,4 +1,6 @@
-﻿using Content.Api.EFModels;
+﻿using Content.Api.Common;
+using Content.Api.EFModels;
+using Content.Api.Event;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -6,7 +8,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using static CSRedis.CSRedisClient;
 
 namespace Content.Api
 {
@@ -47,6 +51,13 @@ namespace Content.Api
                 .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            var csredis = new CSRedis.CSRedisClient(Configuration["RedisConnection"]);
+            RedisHelper.Initialization(csredis);
+
+            services.AddSingleton<RedisUtil>();
+            services.AddSingleton<UserAccessValidation>();
+            services.AddScoped<TaggedEventHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -62,6 +73,26 @@ namespace Content.Api
             app.UseAuthentication();
 
             app.UseMvc();
+
+            ConfigureEventBus(app);
+        }
+
+        private void ConfigureEventBus(IApplicationBuilder app)
+        {
+            using (var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                var taggedEventHandler = scope.ServiceProvider.GetRequiredService<TaggedEventHandler>();
+
+                RedisHelper.Subscribe((RedisUtil.TAGGIE_CHANNEL_TAGGED,
+                eventArgs =>
+                {
+                    var message = JsonConvert.DeserializeObject<TaggedEvent>(eventArgs.Body);
+                    if (message == null) return;
+
+                    taggedEventHandler.Handle(message);
+                }
+                ));
+            }
         }
     }
 }

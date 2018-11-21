@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Content.Api.EFModels.enums;
+using System;
 using System.Collections.Generic;
 
 namespace Content.Api.EFModels
@@ -7,10 +8,9 @@ namespace Content.Api.EFModels
     {
         public int Id { get; set; }
         public int ProjectItemId { get; set; }
-        public int KeywordId { get; set; }
-        public byte AddedByRole { get; set; }
+        public string Keywords { get; set; }
+        public UserRoleType AddedByRole { get; set; }
 
-        public Projectkeyword Keyword { get; set; }
         public Projectitem ProjectItem { get; set; }
     }
 }

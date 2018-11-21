@@ -24,6 +24,6 @@ namespace Content.Mvc.Services
 
         Task<TaggieQueueViewModel> GetNextQueueItem(int projectId);
         Task<string> GetQueueItemContent(int projectItemId);
-        Task SubmitQueueItem(TaggieQueueViewModel queueItem);
+        Task SubmitQueueItem(TaggieQueueSubmitModel submitItem);
     }
 }
