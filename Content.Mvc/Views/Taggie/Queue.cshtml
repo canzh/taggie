@@ -24,9 +24,10 @@ else
                data-toggle="popover" data-trigger="focus" data-placement="bottom" data-content="@SharedHtmlLocalizer[" Please select subcategories!"]">
                 <i class="glyphicon glyphicon-plus"></i> @SharedHtmlLocalizer["Select Subcategories"]
             </a>
-            @*<a id="input-keyword" class="btn btn-primary" onclick="showKeywordModal();" accesskey="w">
-                    <i class="glyphicon glyphicon-plus"></i> @SharedHtmlLocalizer["Input Keywords"]
-                </a>*@
+            <a id="select-keyword" class="btn btn-primary" onclick="showKeywordModal();" accesskey="d"
+               data-toggle="popover" data-trigger="focus" data-placement="bottom" data-content="@SharedHtmlLocalizer[" Please tag keyword!"]">
+                <i class="glyphicon glyphicon-plus"></i> @SharedHtmlLocalizer["Input Keywords"]
+            </a>
         </div>
         <div class="pull-right">
             <a id="result-submit" class="btn btn-primary" onclick="submitQueueItem();" accesskey="q">
@@ -52,13 +53,13 @@ else
                 </div>*@
         </div>
         <div class="panel-body">
-            <div class="alert alert-danger" role="alert" id="submit-alert">
+            <div class="alert alert-danger hide" role="alert" id="submit-alert">
                 <h4 class="alert-heading">@SharedHtmlLocalizer["Failed"]!</h4>
                 <p>@SharedHtmlLocalizer["Submission Failed"]!</p>
                 <hr>
                 <p class="mb-0"></p>
             </div>
-            <div class="alert alert-danger" role="alert" id="load-alert">
+            <div class="alert alert-danger hide" role="alert" id="load-alert">
                 <h4 class="alert-heading">@SharedHtmlLocalizer["Failed"]!</h4>
                 <p>@SharedHtmlLocalizer["Content failed to load"]!</p>
                 <hr>
@@ -164,12 +165,35 @@ else
             </div>
         </div>
     </div>
+    <div aria-labelledby="modal-action-label" role="dialog" tabindex="-1" id="modal-keyword" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@SharedHtmlLocalizer["Tag Keywords"]</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <select id="keyword-selector" class="form-control col-sm-12 col-md-12 col-lg-12" multiple="multiple"></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
+                    <button data-dismiss="modal" class="btn btn-success" type="button">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
 }
 
 @section Scripts {
     <script src="~/lib/jquery-ui-1.12.1/jquery-ui.js"></script>
+    <script src="~/lib/select2-4.0.5/dist/js/select2.js"></script>
     <script>
-        //$('#select-category').popover({ trigger: 'focus' });
 
         function submitQueueItem() {
             var categories = [];
@@ -198,6 +222,13 @@ else
                 return;
             }
 
+            var keywords = $('#keyword-selector').val()
+
+            if (keywords.length == 0) {
+                $('#select-keyword').popover('show');
+                return;
+            }
+
             var request = $.ajax({
                 type: "POST",
                 url: "/taggie/submit",
@@ -205,7 +236,7 @@ else
                     ProjectItemId: $('#project-item-id').text(),
                     CategoryNames: categories,
                     SubcategoryNames: subcategories,
-                    Keywords: "a,b"
+                    Keywords: keywords
                 }
             });
 
@@ -246,12 +277,14 @@ else
         }
 
         function showKeywordModal() {
+            $('#select-keyword').popover('hide');
+
             $('#modal-keyword').modal({
                 backdrop: 'static',
                 show: true
             });
 
-            $('#search-keyword').focus();
+            //$('#keyword-selector').focus();
         }
 
         $('.modal-dialog').draggable({
@@ -265,7 +298,8 @@ else
                     type: 'GET',
                     url: "/Taggie/QueueItemContent/" + $('#project-item-id').text(),
                     success: function (data) {
-                        $('#panel-content').text(data);
+                        data = data.replace(/\r\n|\r|\n/g, '<br />');
+                        $('#panel-content').html(data);
                     },
                     fail: function (xhr, textStatus, errorThrown) {
                         $('#load-alert p').text(errorThrown);
@@ -316,6 +350,12 @@ else
 
                     $('.searchable-container .items', $('#modal-subcategory')).show();
                 }
+            });
+
+            $('#keyword-selector').css('width', '100%');
+            $("#keyword-selector").select2({
+                tags: true,
+                tokenSeparators: [',', ' ']
             });
         });
     </script>

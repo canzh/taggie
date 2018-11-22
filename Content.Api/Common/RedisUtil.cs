@@ -54,9 +54,9 @@ namespace Content.Api.Common
             await RedisHelper.SetAsync(submitted, b ? 1 : 0);
         }
 
-        // TODO: synchronize with finish taggie
-        public async Task<int> AssignQueueItemToUser(int projectId, string userId)
+        public async Task<int> AssignQueueItemToUser(int projectId, string userId, int teamId)
         {
+            // check previous assigned task finished or not
             var submitted = string.Format(TAGGIE_USER_SUBMITTED_PATTERN, projectId, userId);
             var userQueueKey = string.Format(TAGGIE_USER_QUEUE_PATTERN_KEY, projectId, userId);
 
@@ -66,6 +66,22 @@ namespace Content.Api.Common
                 return previousId.Length > 0 ? previousId[0] : 0;
             }
 
+            // TODO: synchronize with finish taggie
+
+            // check team assignment has finished or not
+            var teamStatistics = string.Format(TAGGIE_TEAM_STATISTICS_PATTERN, projectId, teamId);
+            var numbers = await RedisHelper.HMGetAsync(teamStatistics, TAGGIE_TEAM_TOTOL_ASSIGNED, TAGGIE_TEAM_FINISHED);
+            if (numbers.Any(d => d == null))
+            {
+                throw new Exception("failed to determine team assignment info, not able to alocate task!");
+            }
+
+            if (int.Parse(numbers[0]) <= int.Parse(numbers[1]))
+            {
+                return 0; // no more tasks
+            }
+
+            // allocate task using queue
             var projectItemId = await RedisHelper.LPopAsync<int>(string.Format(TAGGIE_PROJECT_QUEUE_PATTERN_KEY, projectId));
 
             if (projectItemId == 0) return 0; // no more items in queue

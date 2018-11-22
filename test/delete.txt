@@ -1,0 +1,6 @@
+delete from projectitemefforttaggie;
+delete from projectitemcategories;
+delete from projectitemsubcategories;
+delete from projectitemkeywords;
+
+update projectitem set `Status`=1;

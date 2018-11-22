@@ -13,6 +13,6 @@ namespace Content.Api.Event
         public string TaggedUserId { get; set; }
         public int[] CategoryIds { get; set; }
         public int[] SubcategoryIds { get; set; }
-        public string Keywords { get; set; }
+        public string[] Keywords { get; set; }
     }
 }

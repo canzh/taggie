@@ -1,0 +1,3 @@
+rpush taggie:project:queue:1 1
+rpush taggie:project:queue:1 2
+

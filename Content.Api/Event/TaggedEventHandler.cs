@@ -90,7 +90,7 @@ namespace Content.Api.Event
             Projectitemkeywords keywords = new Projectitemkeywords
             {
                 ProjectItemId = o.ProjectItemId,
-                Keywords = o.Keywords,
+                Keywords = string.Join(",", o.Keywords),
                 AddedByRole = EFModels.enums.UserRoleType.Taggie
             };
 

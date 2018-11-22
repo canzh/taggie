@@ -49,7 +49,10 @@ namespace Content.Api.Controllers
 
             while (true) // simple solution for synchronize racing condition
             {
-                assignedItemId = await _redis.AssignQueueItemToUser(projectId, _accessValidation.GetUserSubId());
+                assignedItemId = await _redis.AssignQueueItemToUser(
+                    projectId,
+                    _accessValidation.GetUserSubId(),
+                    _accessValidation.GetUserTeamId());
 
                 if (assignedItemId == 0)
                 {
