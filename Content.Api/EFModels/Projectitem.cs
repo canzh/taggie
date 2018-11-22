@@ -11,7 +11,8 @@ namespace Content.Api.EFModels
             Projectitemcategories = new HashSet<Projectitemcategories>();
             Projectitemkeywords = new HashSet<Projectitemkeywords>();
             Projectitemsubcategories = new HashSet<Projectitemsubcategories>();
-            Projectitemeffort = new HashSet<Projectitemeffort>();
+            Projectitemeffortqa = new HashSet<Projectitemeffortqa>();
+            Projectitemefforttaggie = new HashSet<Projectitemefforttaggie>();
         }
 
         public int Id { get; set; }
@@ -26,6 +27,7 @@ namespace Content.Api.EFModels
         public ICollection<Projectitemcategories> Projectitemcategories { get; set; }
         public ICollection<Projectitemkeywords> Projectitemkeywords { get; set; }
         public ICollection<Projectitemsubcategories> Projectitemsubcategories { get; set; }
-        public ICollection<Projectitemeffort> Projectitemeffort { get; set; }
-    }
+        public ICollection<Projectitemeffortqa> Projectitemeffortqa { get; set; }
+        public ICollection<Projectitemefforttaggie> Projectitemefforttaggie { get; set; }
+   }
 }

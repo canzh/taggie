@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using static CSRedis.CSRedisClient;
@@ -57,7 +58,7 @@ namespace Content.Api
 
             services.AddSingleton<RedisUtil>();
             services.AddSingleton<UserAccessValidation>();
-            services.AddScoped<TaggedEventHandler>();
+            services.AddTransient<TaggedEventHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -79,20 +80,20 @@ namespace Content.Api
 
         private void ConfigureEventBus(IApplicationBuilder app)
         {
-            using (var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
-            {
-                var taggedEventHandler = scope.ServiceProvider.GetRequiredService<TaggedEventHandler>();
-
-                RedisHelper.Subscribe((RedisUtil.TAGGIE_CHANNEL_TAGGED,
+            RedisHelper.Subscribe((RedisUtil.TAGGIE_CHANNEL_TAGGED,
                 eventArgs =>
                 {
-                    var message = JsonConvert.DeserializeObject<TaggedEvent>(eventArgs.Body);
-                    if (message == null) return;
+                    using (var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+                    {
+                        var handler = scope.ServiceProvider.GetRequiredService<TaggedEventHandler>();
 
-                    taggedEventHandler.Handle(message);
+                        var message = JsonConvert.DeserializeObject<TaggedEvent>(eventArgs.Body);
+                        if (message == null) return;
+
+                        handler.Handle(message);
+                    }
                 }
-                ));
-            }
+            ));
         }
     }
 }

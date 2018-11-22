@@ -25,9 +25,12 @@ namespace Content.Api.Common
         public const string TAGGIE_PROJECT_REMAINING = "remaining-items";
         public const string TAGGIE_TEAM_STATISTICS_PATTERN = "taggie:team:statistics:{0}:{1}"; // projectid:teamid
         public const string TAGGIE_TEAM_TYPE_FIELD = "team:type";
+        public const string TAGGIE_TEAM_TOTOL_ASSIGNED = "team:total:assigned";
         public const string TAGGIE_TEAM_FINISHED = "team:finished";
+        public const string TAGGIE_TEAM_CORRECT = "team:correct";
         public const string TAGGIE_TEAM_INCORRECT = "team:incorrect";
         public const string TAGGIE_TEAM_USER_FINISHED = "{0}:finished"; // userid
+        public const string TAGGIE_TEAM_USER_CORRECT = "{0}:correct"; // userid
         public const string TAGGIE_TEAM_USER_INCORRECT = "{0}:incorrect"; // userid
         public const string TAGGIE_PROJECT_QUEUE_WIP_PATTERN = "taggie:project:queue:wip:{0}"; // projectid
         public const string TAGGIE_USER_SUBMITTED_PATTERN = "taggie:user:submit:{0}:{1}"; // projectid:userid
@@ -51,6 +54,7 @@ namespace Content.Api.Common
             await RedisHelper.SetAsync(submitted, b ? 1 : 0);
         }
 
+        // TODO: synchronize with finish taggie
         public async Task<int> AssignQueueItemToUser(int projectId, string userId)
         {
             var submitted = string.Format(TAGGIE_USER_SUBMITTED_PATTERN, projectId, userId);
@@ -131,35 +135,47 @@ namespace Content.Api.Common
 
         public void FinishTaggie(int projectId, int teamId, string userId, int projectItemId)
         {
+            var projectMetadataKey = string.Format(TAGGIE_PROJECT_METADATA_PATTERN_KEY, projectId);
             var teamStatisticsKey = string.Format(TAGGIE_TEAM_STATISTICS_PATTERN, projectId, teamId);
             var userField = string.Format(TAGGIE_TEAM_USER_FINISHED, userId);
-            var wipQueue = string.Format(TAGGIE_PROJECT_QUEUE_WIP_PATTERN, projectId);
             var userQueue = string.Format(TAGGIE_USER_QUEUE_PATTERN_KEY, projectId, userId);
+            var wipQueue = string.Format(TAGGIE_PROJECT_QUEUE_WIP_PATTERN, projectId);
 
+            // TODO: synchronize with assign
             RedisHelper.StartPipe()
                 .LRem(wipQueue, 1, projectItemId)
                 .ZRem(userQueue, projectItemId)
                 .HIncrBy(teamStatisticsKey, TAGGIE_TEAM_FINISHED, 1)
                 .HIncrBy(teamStatisticsKey, userField, 1)
+                .HIncrBy(projectMetadataKey, TAGGIE_PROJECT_REMAINING, -1)
                 .EndPipe();
         }
 
+        // TODO: not finished
         public void FinishQA(int projectId, int qaTeamId, int taggieTeamId, string qaUserId, string taggieUserId, bool correct)
         {
-            var qaStatisticsKey = string.Format(TAGGIE_TEAM_STATISTICS_PATTERN, projectId, qaTeamId);
+            var qaTeamStatistics = string.Format(TAGGIE_TEAM_STATISTICS_PATTERN, projectId, qaTeamId);
             var qaUserField = string.Format(TAGGIE_TEAM_USER_FINISHED, qaUserId);
 
             var pipe = RedisHelper.StartPipe()
-                .HIncrBy(qaStatisticsKey, TAGGIE_TEAM_FINISHED, 1)
-                .HIncrBy(qaStatisticsKey, qaUserField, 1);
+                .HIncrBy(qaTeamStatistics, TAGGIE_TEAM_FINISHED, 1)
+                .HIncrBy(qaTeamStatistics, qaUserField, 1);
 
-            if (!correct)
+            var taggieTeamStatistics = string.Format(TAGGIE_TEAM_STATISTICS_PATTERN, projectId, taggieTeamId);
+
+            if (correct)
             {
-                var taggieStatisticsKey = string.Format(TAGGIE_TEAM_STATISTICS_PATTERN, projectId, taggieTeamId);
-                var taggieUserField = string.Format(TAGGIE_TEAM_USER_INCORRECT, taggieUserId);
+                var taggieUserCorrect = string.Format(TAGGIE_TEAM_USER_CORRECT, taggieUserId);
 
-                pipe.HIncrBy(taggieStatisticsKey, TAGGIE_TEAM_INCORRECT, 1)
-                    .HIncrBy(taggieStatisticsKey, taggieUserField, 1);
+                pipe.HIncrBy(taggieTeamStatistics, TAGGIE_TEAM_CORRECT, 1)
+                    .HIncrBy(taggieTeamStatistics, taggieUserCorrect, 1);
+            }
+            else
+            {
+                var taggieUserIncorrect = string.Format(TAGGIE_TEAM_USER_INCORRECT, taggieUserId);
+
+                pipe.HIncrBy(taggieTeamStatistics, TAGGIE_TEAM_INCORRECT, 1)
+                    .HIncrBy(taggieTeamStatistics, taggieUserIncorrect, 1);
             }
 
             pipe.EndPipe();

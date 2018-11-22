@@ -45,11 +45,23 @@ namespace Content.Api.Controllers
             //var projectitem = await _context.Projectitem.Include(e => e.Project).FirstOrDefaultAsync(
             //    d => d.Status == ProjectItemStatus.New);
 
-            var assignedItemId = await _redis.AssignQueueItemToUser(projectId, _accessValidation.GetUserSubId());
+            var assignedItemId = 0;
 
-            if (assignedItemId == 0)
+            while (true) // simple solution for synchronize racing condition
             {
-                return NoContent();
+                assignedItemId = await _redis.AssignQueueItemToUser(projectId, _accessValidation.GetUserSubId());
+
+                if (assignedItemId == 0)
+                {
+                    return NoContent();
+                }
+
+                var dbItem = await _context.Projectitem.FindAsync(assignedItemId);
+
+                if (dbItem != null && dbItem.Status == ProjectItemStatus.New)
+                {
+                    break;
+                }
             }
 
             var pojectInfo = await _redis.GetProjectInfo(projectId);

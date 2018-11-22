@@ -38,26 +38,30 @@ namespace Content.Api.Event
             // 1. update team statistics
             // 1. delete project item id in project wip queue
             // 1. delete project item id in user queue
+            // 1. decrease project meta remaining
 
             var projectItem = _context.Projectitem.FirstOrDefault(d => d.Id == o.ProjectItemId);
 
-            if (projectItem != null)
+            if (projectItem == null)
             {
                 _logger.LogInformation("Project item is not found for id: {0}", o.ProjectItemId);
                 return;
             }
 
             projectItem.Status = EFModels.enums.ProjectItemStatus.Tagged;
+            _context.SaveChanges(); // save status quickly for racing condition
 
-            Projectitemeffort effort = new Projectitemeffort
+            Projectitemefforttaggie effort = new Projectitemefforttaggie
             {
                 ProjectItemId = projectItem.Id,
                 EffortUserId = o.TaggedUserId,
-                EffortUserRole = EFModels.enums.UserRoleType.Taggie,
-                CreatedDate = DateTime.Now
+                CreatedDate = DateTime.Now,
+                ProjectId = o.ProjectId,
+                TeamId = o.TeamId,
+                VerifiedStatus = EFModels.enums.ProjectItemVerifyStatus.Pending
             };
 
-            _context.Projectitemeffort.Add(effort);
+            _context.Projectitemefforttaggie.Add(effort);
 
             foreach (var id in o.CategoryIds)
             {
@@ -91,6 +95,8 @@ namespace Content.Api.Event
             };
 
             _context.Projectitemkeywords.Add(keywords);
+
+            _context.SaveChanges();
 
             _redis.FinishTaggie(projectItem.ProjectId, o.TeamId, o.TaggedUserId, o.ProjectItemId);
 

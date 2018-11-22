@@ -8,7 +8,6 @@ namespace Content.Api.EFModels
     {
         public Projectkeyword()
         {
-            Projectitemkeywords = new HashSet<Projectitemkeywords>();
         }
 
         public int Id { get; set; }
@@ -16,7 +15,5 @@ namespace Content.Api.EFModels
         public TagStatus Status { get; set; }
         public int ProjectId { get; set; }
         public DateTime CreatedDate { get; set; }
-
-        public ICollection<Projectitemkeywords> Projectitemkeywords { get; set; }
     }
 }

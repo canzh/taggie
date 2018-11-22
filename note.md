@@ -73,12 +73,16 @@ record team users effort statistics as well as whole team
 
 sample:
 {
+    "team:total:assigned": 10000,
     "team:type": taggie,
     "team:finished": 1000,
+    "team:correct": 100,
     "team:incorrect": 100,
     "1:finished": 200,
+    "1:correct": 5,
     "1:incorrect": 5,
     "2:finished": 500,
+    "2:correct": 10,
     "2:incorrect": 10,
     ...
 }

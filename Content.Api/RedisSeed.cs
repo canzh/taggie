@@ -91,6 +91,20 @@ namespace Content.Api
                         pipe.EndPipe();
                     }
 
+                    // project assigned to team
+                    var teamAssignment = context.Teamprojects.Where(d => d.ProjectId == p.Id).ToList();
+
+                    foreach (var assign in teamAssignment)
+                    {
+                        var teamStatisticsKey = string.Format(RedisUtil.TAGGIE_TEAM_STATISTICS_PATTERN, p.Id, assign.TeamId);
+
+                        // only seed project assigned item count here
+                        await RedisHelper.DelAsync(teamStatisticsKey);
+                        await RedisHelper.HSetAsync(teamStatisticsKey, RedisUtil.TAGGIE_TEAM_TOTOL_ASSIGNED, assign.AssignedProjectItems);
+                    }
+
+                    // TODO: calculate user effort statistics
+
                     // project keywords
                     //var projectKeywordsKey = string.Format(RedisUtil.TAGGIE_KEYWORDS_PATTERN_KEY, p.Id);
                     //if (!await RedisHelper.ExistsAsync(projectKeywordsKey))
