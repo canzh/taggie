@@ -89,6 +89,8 @@ namespace Content.Mvc
 
             app.UseAuthentication();
 
+            //app.UseHttpsRedirection();
+
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
@@ -115,7 +117,12 @@ namespace Content.Mvc
                 options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
             })
-            .AddCookie("Cookies")
+            .AddCookie("Cookies", options =>
+            {
+                //options.Cookie.HttpOnly = false;
+                //options.Cookie.SameSite = SameSiteMode.None;
+                //options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+            })
             .AddOpenIdConnect(options =>
             {
                 options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;

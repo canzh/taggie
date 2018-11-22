@@ -32,6 +32,11 @@ namespace Content.Mvc.Controllers
             return View();
         }
 
+        public async Task Login()
+        {
+            await HttpContext.ChallengeAsync(OpenIdConnectDefaults.AuthenticationScheme);
+        }
+
         public async Task Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);

@@ -1,18 +1,20 @@
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IHtmlLocalizer<SharedResource> SharedHtmlLocalizer
 
 @if (User.Identity.IsAuthenticated)
 {
     <ul class="nav navbar-nav navbar-right">
         <li>
-            <span>Hello @User.Identity.Name!</span>
+            <a>@User.FindFirst("name")?.Value</a>
         </li>
         <li>
-            <a asp-area="" asp-controller="Home" asp-action="Logout">Logout</a>
+            <a asp-area="" asp-controller="Home" asp-action="Logout">@SharedHtmlLocalizer["Logout"]</a>
         </li>
     </ul>
 }
 else
 {
     <ul class="nav navbar-nav navbar-right">
-        <li><a asp-area="Identity" asp-page="/Account/Login">Login</a></li>
+        <li><a asp-area="" asp-controller="Home" asp-action="Login">@SharedHtmlLocalizer["Login"]</a></li>
     </ul>
 }

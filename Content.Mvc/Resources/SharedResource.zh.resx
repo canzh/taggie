@@ -162,6 +162,9 @@
   <data name="FinishedItems" xml:space="preserve">
     <value>已完成</value>
   </data>
+  <data name="Hello" xml:space="preserve">
+    <value>欢迎</value>
+  </data>
   <data name="Id" xml:space="preserve">
     <value>标识符</value>
   </data>
@@ -173,6 +176,12 @@
   </data>
   <data name="Keywords" xml:space="preserve">
     <value>关键词</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>登陆</value>
+  </data>
+  <data name="Logout" xml:space="preserve">
+    <value>退出</value>
   </data>
   <data name="MemberCount" xml:space="preserve">
     <value>团队人员数</value>
@@ -230,6 +239,9 @@
   </data>
   <data name="Submission Failed" xml:space="preserve">
     <value>提交失败</value>
+  </data>
+  <data name="Tag Keywords" xml:space="preserve">
+    <value>添加关键词</value>
   </data>
   <data name="Taggie Master" xml:space="preserve">
     <value>标记云</value>
