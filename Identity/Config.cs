@@ -15,6 +15,8 @@ namespace taggie
             {
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
+                new IdentityResource("roles", "Your role(s)", new List<string>(){"role","team"})
+                //new IdentityResource("teams", "Your team(s)", new List<string>(){"team"})
             };
         }
 
@@ -22,7 +24,15 @@ namespace taggie
         {
             return new List<ApiResource>
             {
-                new ApiResource("api1", "My API") { UserClaims = { JwtClaimTypes.Name, JwtClaimTypes.Role, "team" }}
+                new ApiResource("api1", "My API")
+                {
+                    UserClaims =
+                    {
+                        JwtClaimTypes.Name,
+                        JwtClaimTypes.Role,
+                        "team"
+                    }
+                }
             };
         }
 
@@ -78,9 +88,11 @@ namespace taggie
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
-                        "api1"
+                        "api1",
+                        "roles",
+                        //"teams"
                     },
-                    AllowOfflineAccess = true
+                    AllowOfflineAccess = true,
                 },
 
                 new Client
