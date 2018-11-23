@@ -34,7 +34,13 @@ namespace Content.Mvc.Controllers
 
         public async Task Login()
         {
-            await HttpContext.ChallengeAsync(OpenIdConnectDefaults.AuthenticationScheme);
+            //var referer = Request.Headers["Referer"].ToString();
+            //var isLocal = Url.IsLocalUrl(referer);isLocal ? referer : 
+
+            var returnUrl = Url.Action(nameof(Index), "Home");
+
+            await HttpContext.ChallengeAsync(OpenIdConnectDefaults.AuthenticationScheme,
+                new AuthenticationProperties { RedirectUri = returnUrl });
         }
 
         public async Task Logout()
