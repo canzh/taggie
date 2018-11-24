@@ -93,6 +93,8 @@ namespace taggie
                         //"teams"
                     },
                     AllowOfflineAccess = true,
+                    AccessTokenLifetime = 90,
+                    IdentityTokenLifetime = 90
                 },
 
                 new Client
