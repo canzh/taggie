@@ -98,12 +98,12 @@ namespace Content.Api
                     {
                         var teamStatisticsKey = string.Format(RedisUtil.TAGGIE_TEAM_STATISTICS_PATTERN, p.Id, assign.TeamId);
 
-                        // only seed project assigned item count here
                         await RedisHelper.DelAsync(teamStatisticsKey);
-                        await RedisHelper.HSetAsync(teamStatisticsKey, RedisUtil.TAGGIE_TEAM_TOTOL_ASSIGNED, assign.AssignedProjectItems);
-                    }
 
-                    // TODO: calculate user effort statistics
+                        await CalcTaggieTeamStatistics(teamStatisticsKey, assign, p, context);
+
+                        // TODO: QA table
+                    }
 
                     // project keywords
                     //var projectKeywordsKey = string.Format(RedisUtil.TAGGIE_KEYWORDS_PATTERN_KEY, p.Id);
@@ -116,5 +116,71 @@ namespace Content.Api
                 }
             }
         }
+
+        private static async Task CalcTaggieTeamStatistics(string teamStatisticsKey, Teamprojects assign, Project p, ApiDbContext context)
+        {
+            // team statistics
+            await RedisHelper.HSetAsync(teamStatisticsKey, RedisUtil.TAGGIE_TEAM_TOTOL_ASSIGNED, assign.AssignedProjectItems);
+
+            var finishedCount = context.Projectitemefforttaggie.Count(d => d.ProjectId == p.Id && d.TeamId == assign.TeamId);
+            await RedisHelper.HSetAsync(teamStatisticsKey, RedisUtil.TAGGIE_TEAM_FINISHED, finishedCount);
+
+            var teamCorrectCount = context.Projectitemefforttaggie.Count(d =>
+                d.ProjectId == p.Id && d.TeamId == assign.TeamId && d.VerifiedStatus == EFModels.enums.ProjectItemVerifyStatus.Correct);
+            await RedisHelper.HSetAsync(teamStatisticsKey, RedisUtil.TAGGIE_TEAM_CORRECT, teamCorrectCount);
+
+            var teamIncorrectCount = context.Projectitemefforttaggie.Count(d =>
+                d.ProjectId == p.Id && d.TeamId == assign.TeamId && d.VerifiedStatus == EFModels.enums.ProjectItemVerifyStatus.Incorrect);
+            await RedisHelper.HSetAsync(teamStatisticsKey, RedisUtil.TAGGIE_TEAM_INCORRECT, teamIncorrectCount);
+
+            // user statistics
+            var finishedGrouped = from b in context.Projectitemefforttaggie
+                                  where b.ProjectId == p.Id && b.TeamId == assign.TeamId
+                                  group b.Id by b.EffortUserId into g
+                                  select new
+                                  {
+                                      Key = g.Key,
+                                      Count = g.Count()
+                                  };
+            var finishedResult = finishedGrouped.ToList();
+
+            foreach (var u in finishedResult)
+            {
+                await RedisHelper.HSetAsync(teamStatisticsKey, string.Format(RedisUtil.TAGGIE_TEAM_USER_FINISHED, u.Key), u.Count);
+            }
+
+            // correct
+            var correctGrouped = from b in context.Projectitemefforttaggie
+                                 where b.ProjectId == p.Id && b.TeamId == assign.TeamId && b.VerifiedStatus == EFModels.enums.ProjectItemVerifyStatus.Correct
+                                 group b.Id by b.EffortUserId into g
+                                 select new
+                                 {
+                                     Key = g.Key,
+                                     Count = g.Count()
+                                 };
+            var correctResult = correctGrouped.ToList();
+
+            foreach (var u in correctResult)
+            {
+                await RedisHelper.HSetAsync(teamStatisticsKey, string.Format(RedisUtil.TAGGIE_TEAM_USER_CORRECT, u.Key), u.Count);
+            }
+
+            // incorrect
+            var incorrectGrouped = from b in context.Projectitemefforttaggie
+                                   where b.ProjectId == p.Id && b.TeamId == assign.TeamId && b.VerifiedStatus == EFModels.enums.ProjectItemVerifyStatus.Incorrect
+                                   group b.Id by b.EffortUserId into g
+                                   select new
+                                   {
+                                       Key = g.Key,
+                                       Count = g.Count()
+                                   };
+            var incorrectResult = incorrectGrouped.ToList();
+
+            foreach (var u in incorrectResult)
+            {
+                await RedisHelper.HSetAsync(teamStatisticsKey, string.Format(RedisUtil.TAGGIE_TEAM_USER_INCORRECT, u.Key), u.Count);
+            }
+        }
+
     }
 }
