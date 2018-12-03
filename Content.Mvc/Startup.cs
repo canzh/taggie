@@ -61,6 +61,12 @@ namespace Content.Mvc
                         (type, factory) => factory.Create(typeof(SharedResource));
                 }); ;
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("HasTeam", policy => policy.RequireClaim("team"));
+                options.AddPolicy("Admin", policy => policy.RequireClaim("role", "Admin"));
+            });
+
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
 

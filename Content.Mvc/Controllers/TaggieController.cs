@@ -12,7 +12,7 @@ using Microsoft.Extensions.Localization;
 
 namespace Content.Mvc.Controllers
 {
-    [Authorize]
+    [Authorize(Policy = "HasTeam")]
     public class TaggieController : Controller
     {
         private readonly IStringLocalizer<TeamController> _localizer;

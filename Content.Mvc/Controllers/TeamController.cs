@@ -4,12 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Content.Mvc.Models;
 using Content.Mvc.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 
 namespace Content.Mvc.Controllers
 {
+    [Authorize(Policy = "Admin")]
     public class TeamController : Controller
     {
         // http://localhost:7004/?culture=es-MX&ui-culture=es-MX

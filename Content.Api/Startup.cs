@@ -48,8 +48,18 @@ namespace Content.Api
             services.AddDbContext<ApiDbContext>(options =>
                 options.UseMySQL(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+            services.AddMvc(options =>
+            {
+                options.Filters.Add(typeof(HttpGlobalExceptionFilter));
+
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                 .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("HasTeam", policy => policy.RequireClaim("team"));
+                options.AddPolicy("Admin", policy => policy.RequireClaim("role", "Admin"));
+            });
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 

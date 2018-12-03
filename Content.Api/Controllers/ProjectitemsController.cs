@@ -10,11 +10,13 @@ using Content.Api.EFModels.enums;
 using Content.Api.EFModels.dto;
 using Content.Api.Common;
 using Content.Api.Event;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Content.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Policy = "HasTeam")]
     public class ProjectitemsController : ControllerBase
     {
         private readonly ApiDbContext _context;

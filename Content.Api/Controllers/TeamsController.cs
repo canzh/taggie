@@ -7,11 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Content.Api.EFModels;
 using Content.Api.EFModels.dto;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Content.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Policy = "Admin")]
     public class TeamsController : ControllerBase
     {
         private readonly ApiDbContext _context;

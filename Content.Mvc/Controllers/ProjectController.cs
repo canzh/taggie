@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Content.Mvc.Models;
 using Content.Mvc.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -11,6 +12,7 @@ using Microsoft.Extensions.Localization;
 
 namespace Content.Mvc.Controllers
 {
+    [Authorize(Policy = "Admin")]
     public class ProjectController : Controller
     {
         private readonly IStringLocalizer<TeamController> _localizer;

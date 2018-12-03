@@ -27,6 +27,7 @@ namespace Content.Api.Controllers
 
         // GET: api/Projects
         [HttpGet]
+        [Authorize(Policy = "Admin")]
         public IEnumerable<Project> GetProject()
         {
             return _context.Project;
@@ -35,6 +36,7 @@ namespace Content.Api.Controllers
         // GET: api/Projects/taggie
         [HttpGet]
         [Route("taggie")]
+        [Authorize(Policy = "HasTeam")]
         public async Task<IActionResult> GetTaggieProjectList()
         {
             var loginUser = _httpContext.HttpContext.User;
@@ -111,6 +113,7 @@ namespace Content.Api.Controllers
 
         // PUT: api/Projects/5
         [HttpPut("{id}")]
+        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> PutProject([FromRoute] int id, [FromBody] Project project)
         {
             if (!ModelState.IsValid)
@@ -146,6 +149,7 @@ namespace Content.Api.Controllers
 
         // POST: api/Projects
         [HttpPost]
+        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> PostProject([FromBody] Project project)
         {
             if (!ModelState.IsValid)
@@ -161,6 +165,7 @@ namespace Content.Api.Controllers
 
         // POST: api/Projects/1
         [HttpPost("{projectId}")]
+        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> PostAssignItemsToTeam(int projectId, [FromBody] ProjectAssignment assignment)
         {
             if (!ModelState.IsValid)
@@ -196,6 +201,7 @@ namespace Content.Api.Controllers
 
         // DELETE: api/Projects/5
         [HttpDelete("{id}")]
+        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> DeleteProject([FromRoute] int id)
         {
             if (!ModelState.IsValid)
