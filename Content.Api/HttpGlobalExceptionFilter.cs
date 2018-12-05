@@ -23,27 +23,27 @@ namespace Content.Api
                 context.Exception,
                 context.Exception.Message);
 
-            //if (context.Exception.GetType() == typeof(BasketDomainException))
-            //{
-            //    var json = new
-            //    {
-            //        Messages = new[] { context.Exception.Message }
-            //    };
-
-            //    context.Result = new BadRequestObjectResult(json);
-            //    context.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-            //}
-            //else
+            if (context.Exception.GetType() == typeof(ApiDomainException))
             {
-                var json = new
+                var json = new JsonErrorResponse
+                {
+                    Messages = new[] { context.Exception.Message }
+                };
+
+                context.Result = new BadRequestObjectResult(json);
+                context.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            }
+            else
+            {
+                var json = new JsonErrorResponse
                 {
                     Messages = new[] { "An error occurred. Try it again." }
                 };
 
-                //if (env.IsDevelopment())
-                //{
-                //    json.DeveloperMessage = context.Exception;
-                //}
+                if (env.IsDevelopment())
+                {
+                    json.DeveloperMessage = context.Exception;
+                }
 
                 //context.Result = new InternalServerErrorObjectResult(json);
 

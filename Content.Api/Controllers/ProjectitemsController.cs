@@ -60,6 +60,10 @@ namespace Content.Api.Controllers
                 {
                     return NoContent();
                 }
+                else if (assignedItemId == -1)
+                {
+                    throw new Exception("Failed to acquire lock, please try again later.");
+                }
 
                 var dbItem = await _context.Projectitem.FindAsync(assignedItemId);
 
