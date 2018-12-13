@@ -1,0 +1,53 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Content.Api\EFModels\ApiDbContext.cs" Link="EFModel\ApiDbContext.cs" />
+    <Compile Include="..\Content.Api\EFModels\Category.cs" Link="EFModel\Category.cs" />
+    <Compile Include="..\Content.Api\EFModels\Contentfile.cs" Link="EFModel\Contentfile.cs" />
+    <Compile Include="..\Content.Api\EFModels\Contentfilepath.cs" Link="EFModel\Contentfilepath.cs" />
+    <Compile Include="..\Content.Api\EFModels\Effortstatisticqa.cs" Link="EFModel\Effortstatisticqa.cs" />
+    <Compile Include="..\Content.Api\EFModels\Effortstatistictag.cs" Link="EFModel\Effortstatistictag.cs" />
+    <Compile Include="..\Content.Api\EFModels\Effortstatisticteam.cs" Link="EFModel\Effortstatisticteam.cs" />
+    <Compile Include="..\Content.Api\EFModels\enums\MetadataStatus.cs" Link="EFModel\enums\MetadataStatus.cs" />
+    <Compile Include="..\Content.Api\EFModels\enums\ProjectItemStatus.cs" Link="EFModel\enums\ProjectItemStatus.cs" />
+    <Compile Include="..\Content.Api\EFModels\enums\ProjectItemVerifyStatus.cs" Link="EFModel\enums\ProjectItemVerifyStatus.cs" />
+    <Compile Include="..\Content.Api\EFModels\enums\ProjectStatus.cs" Link="EFModel\enums\ProjectStatus.cs" />
+    <Compile Include="..\Content.Api\EFModels\enums\TeamStatus.cs" Link="EFModel\enums\TeamStatus.cs" />
+    <Compile Include="..\Content.Api\EFModels\enums\UserRoleType.cs" Link="EFModel\enums\UserRoleType.cs" />
+    <Compile Include="..\Content.Api\EFModels\Filecategory.cs" Link="EFModel\Filecategory.cs" />
+    <Compile Include="..\Content.Api\EFModels\Filesubcategory.cs" Link="EFModel\Filesubcategory.cs" />
+    <Compile Include="..\Content.Api\EFModels\Finance.cs" Link="EFModel\Finance.cs" />
+    <Compile Include="..\Content.Api\EFModels\Financehistory.cs" Link="EFModel\Financehistory.cs" />
+    <Compile Include="..\Content.Api\EFModels\Project.cs" Link="EFModel\Project.cs" />
+    <Compile Include="..\Content.Api\EFModels\Projectcategory.cs" Link="EFModel\Projectcategory.cs" />
+    <Compile Include="..\Content.Api\EFModels\Projectitem.cs" Link="EFModel\Projectitem.cs" />
+    <Compile Include="..\Content.Api\EFModels\Projectitemcategories.cs" Link="EFModel\Projectitemcategories.cs" />
+    <Compile Include="..\Content.Api\EFModels\Projectitemeffortqa.cs" Link="EFModel\Projectitemeffortqa.cs" />
+    <Compile Include="..\Content.Api\EFModels\Projectitemefforttaggie.cs" Link="EFModel\Projectitemefforttaggie.cs" />
+    <Compile Include="..\Content.Api\EFModels\Projectitemkeywords.cs" Link="EFModel\Projectitemkeywords.cs" />
+    <Compile Include="..\Content.Api\EFModels\Projectitemsubcategories.cs" Link="EFModel\Projectitemsubcategories.cs" />
+    <Compile Include="..\Content.Api\EFModels\Projectkeyword.cs" Link="EFModel\Projectkeyword.cs" />
+    <Compile Include="..\Content.Api\EFModels\Projectsubcategory.cs" Link="EFModel\Projectsubcategory.cs" />
+    <Compile Include="..\Content.Api\EFModels\Subcategory.cs" Link="EFModel\Subcategory.cs" />
+    <Compile Include="..\Content.Api\EFModels\Team.cs" Link="EFModel\Team.cs" />
+    <Compile Include="..\Content.Api\EFModels\Teamprojects.cs" Link="EFModel\Teamprojects.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CSRedisCore" Version="3.0.27" />
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="MySql.Data.EntityFrameworkCore" Version="8.0.13" />
+    <PackageReference Include="Serilog.AspNetCore" Version="2.1.1" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
+    <PackageReference Include="Serilog.Sinks.File" Version="4.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="EFModel\enums\" />
+  </ItemGroup>
+
+</Project>

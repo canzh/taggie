@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Content.Spa", "Content.Spa\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Content.Mvc", "Content.Mvc\Content.Mvc.csproj", "{DF688669-06A8-4FE3-BB95-D4AA6CE78269}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Content.Report", "Content.Report\Content.Report.csproj", "{E10CC9C9-0775-43B4-9B8D-FD0494756AAE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Content.Report", "Content.Report\Content.Report.csproj", "{E10CC9C9-0775-43B4-9B8D-FD0494756AAE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackgroundPopulateTaskQueue", "BackgroundPopulateTaskQueue\BackgroundPopulateTaskQueue.csproj", "{BE81B2BF-FE2F-478E-8B23-F50CC43D45C3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{E10CC9C9-0775-43B4-9B8D-FD0494756AAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E10CC9C9-0775-43B4-9B8D-FD0494756AAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E10CC9C9-0775-43B4-9B8D-FD0494756AAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE81B2BF-FE2F-478E-8B23-F50CC43D45C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE81B2BF-FE2F-478E-8B23-F50CC43D45C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE81B2BF-FE2F-478E-8B23-F50CC43D45C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE81B2BF-FE2F-478E-8B23-F50CC43D45C3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
